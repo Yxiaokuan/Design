@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/design?useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  type-aliases-package: com.clown.design.entity
+  mapper-locations: classpath:mapper/*.xml
