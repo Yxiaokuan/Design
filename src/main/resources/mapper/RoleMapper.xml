@@ -14,4 +14,8 @@
         SELECT * FROM role WHERE id = #{id}
     </select>
 
+    <select id="selectRoleByPassWord" parameterType="Map" resultType="com.clown.design.entity.Role">
+        SELECT * FROM role WHERE roleName = #{roleName} AND passWord = #{passWord}
+    </select>
+
 </mapper>

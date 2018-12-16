@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clown.design.dao.IDesigntopicDao">
+    <resultMap id="designtopicResult" type="com.clown.design.entity.Designtopic">
+        <id column="id" property="id"/>
+        <result column="topic" property="topic"/>
+        <result column="description" property="description"/>
+        <result column="dish_teacherId" property="dish_teacherId"/>
+        <result column="dish_teacherId" property="guide_teacherId"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="selectDesigntopicByCurr" parameterType="Integer" resultType="com.clown.design.entity.Designtopic">
+        SELECT * FROM designtopic
+        LIMIT #{start}, #{size}
+    </select>
+
+    <select id="selectCountDesigntopic" resultType="Integer">
+        SELECT count(*) AS total from designtopic
+    </select>
+
+</mapper>

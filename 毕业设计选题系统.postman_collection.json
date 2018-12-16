@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "8cb4f955-fbc9-4dfb-9b95-0594559a0a22",
+		"name": "毕业设计选题系统",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "登录",
+			"item": [
+				{
+					"name": "角色登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/role/verifyRole?roleName=clown&passWord=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"role",
+								"verifyRole"
+							],
+							"query": [
+								{
+									"key": "roleName",
+									"value": "clown",
+									"description": "登录名"
+								},
+								{
+									"key": "passWord",
+									"value": "123",
+									"description": "登录密码"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "角色",
+			"item": [
+				{
+					"name": "根据ID获取角色信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/role/getRoleById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"role",
+								"getRoleById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "毕业设计选题",
+			"item": [
+				{
+					"name": "分页获取毕业设计选题",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/designtopic/listDesigntopicByCurr?page=1&num=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"designtopic",
+								"listDesigntopicByCurr"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "页码数"
+								},
+								{
+									"key": "num",
+									"value": "2",
+									"description": "每页数量"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
