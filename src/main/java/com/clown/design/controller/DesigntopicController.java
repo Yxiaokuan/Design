@@ -44,4 +44,23 @@ public class DesigntopicController {
         }
         return res;
     }
+
+    @RequestMapping("/getDesigntopicById")
+    public Map<String, Object> getDesigntopicById(HttpServletResponse response, HttpServletRequest request, Designtopic designtopic) throws IOException {
+        Map<String, Object> res = new HashMap<>();
+        res.put("is", false);
+        Integer id = designtopic.getId();
+        if(id==null||id.equals("")) {
+            res.put("msg", "id不能为空！");
+        } else {
+            Designtopic data = this.designtopicService.getDesigntopicById(id);
+            if(data != null) {
+                res.put("is", true);
+                res.put("data", data);
+            } else {
+                res.put("msg", "获取失败！");
+            }
+        }
+        return res;
+    }
 }

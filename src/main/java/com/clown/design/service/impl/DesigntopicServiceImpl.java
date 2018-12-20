@@ -30,4 +30,9 @@ public class DesigntopicServiceImpl implements IDesigntopicService {
         res.put("total", this.designtopicDao.selectCountDesigntopic());
         return res;
     }
+
+    @Override
+    public Designtopic getDesigntopicById(Integer id) {
+        return this.designtopicDao.selectDesigntopicById(id);
+    }
 }

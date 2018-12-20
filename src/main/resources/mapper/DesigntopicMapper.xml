@@ -10,6 +10,10 @@
         <result column="dish_teacherId" property="dish_teacherId"/>
         <result column="dish_teacherId" property="guide_teacherId"/>
         <result column="status" property="status"/>
+        <collection property="teachers" ofType="com.clown.design.entity.Teacher">
+            <id column="teacher_id" property="id"/>
+            <result column="teacherName" property="teacherName"/>
+        </collection>
     </resultMap>
 
     <select id="selectDesigntopicByCurr" parameterType="Integer" resultType="com.clown.design.entity.Designtopic">
@@ -19,6 +23,18 @@
 
     <select id="selectCountDesigntopic" resultType="Integer">
         SELECT count(*) AS total from designtopic
+    </select>
+
+    <select id="selectDesigntopicById" resultMap="designtopicResult">
+        SELECT
+            *,
+            teacher.id AS teacher_id
+        FROM
+            designtopic
+        LEFT JOIN teacher ON designtopic.dish_teacherId = teacher.id
+        OR designtopic.guide_teacherId = teacher.id
+        WHERE
+            designtopic.id = #{id}
     </select>
 
 </mapper>

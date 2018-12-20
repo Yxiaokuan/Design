@@ -2,6 +2,8 @@ package com.clown.design.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Designtopic {
     private Integer id;
@@ -10,4 +12,6 @@ public class Designtopic {
     private Integer dish_teacherId;
     private Integer guide_teacherId;
     private Integer status;
+
+    private List<Teacher> teachers;
 }
