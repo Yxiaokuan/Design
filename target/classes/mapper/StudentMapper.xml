@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clown.design.dao.IStudentDao">
+    <resultMap id="studentResult" type="com.clown.design.entity.Student">
+        <id column="id" property="id"/>
+        <result column="studentName" property="studentName"/>
+        <result column="studentIdentifier" property="studentIdentifier"/>
+        <result column="collegeId" property="collegeId"/>
+        <result column="classId" property="classId"/>
+        <result column="topicId" property="topicId"/>
+    </resultMap>
+
+    <select id="selectStudentById" parameterType="Integer" resultType="com.clown.design.entity.Student">
+        SELECT * FROM student WHERE id = #{id}
+    </select>
+
+    <update id="updatePasswordById" parameterType="Map">
+        UPDATE student SET password=#{newPassword} WHERE id = #{id} AND password = #{password}
+    </update>
+
+
+
+</mapper>

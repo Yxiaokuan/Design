@@ -77,6 +77,7 @@
 |:---- |:---- |:---- |:---- |
 | id | Integer | 教师ID |
 | password | String | 教师登录密码 |
+| newPassword | String | 新登录密码 |
 
 返回参数：
 
@@ -92,6 +93,7 @@
 |:---- |:---- |:---- |:---- |
 | id | Integer | 学生ID |
 | password | String | 学生登录密码 |
+| newPassword | String | 新登录密码 |
 
 返回参数：
 

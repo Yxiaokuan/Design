@@ -24,17 +24,17 @@ public class RoleController {
     @RequestMapping(value = "/getRoleById", method = RequestMethod.GET)
     public Map<String, Object> getRoleById(HttpServletRequest request, HttpServletResponse response, Role role) throws IOException {
         Map<String, Object> map = new HashMap<>();
-        map.put("is", false);
+        map.put("isSuccessful", false);
         Integer id = role.getId();
         if(id==null||id.equals("")) {
-            map.put("msg", "id不能为空！");
+            map.put("message", "id不能为空！");
         }else{
             Role res = this.roleSerivce.getRoleById(id);
             if(res != null) {
-                map.put("is", true);
+                map.put("isSuccessful", true);
                 map.put("data", res);
             } else {
-                map.put("msg", "登录失败！");
+                map.put("message", "登录失败！");
             }
         }
         return map;
@@ -43,22 +43,22 @@ public class RoleController {
     @RequestMapping(value = "verifyRole", method = RequestMethod.POST)
     public Map<String, Object> verifyRole(HttpServletRequest request, HttpServletResponse response, Role role) throws  IOException {
         Map<String, Object> map = new HashMap<>();
-        map.put("is", false);
+        map.put("isSuccessful", false);
         String roleName = role.getRoleName();
-        String passWord = role.getPassWord();
+        String password = role.getPassword();
         if(roleName==null||roleName.equals("")) {
-            map.put("msg", "roleName不能为空！");
-        } else if(passWord==null||passWord.equals("")) {
-            map.put("msg", "passWord不能为空！");
+            map.put("message", "roleName不能为空！");
+        } else if(password==null||password.equals("")) {
+            map.put("message", "passWord不能为空！");
         } else{
-            Role res = this.roleSerivce.verifyRole(roleName, passWord);
+            Role res = this.roleSerivce.verifyRole(roleName, password);
             if(res != null) {
-                map.put("is", true);
-                map.put("msg", "登录成功！");
+                map.put("isSuccessful", true);
+                map.put("message", "登录成功！");
                 map.put("roleId", res.getId());
                 map.put("roleType", res.getRoleType());
             } else {
-                map.put("msg", "登录失败！");
+                map.put("message", "登录失败！");
             }
         }
         return map;

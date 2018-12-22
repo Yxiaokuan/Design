@@ -2,10 +2,11 @@ package com.clown.design.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class Designtopic {
+public class Designtopic implements Serializable {
     private Integer id;
     private String topic;
     private String description;

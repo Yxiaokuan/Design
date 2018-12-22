@@ -24,22 +24,22 @@ public class DesigntopicController {
     @RequestMapping("/listDesigntopicByCurr")
     public Map<String, Object> listDesigntopicByCurr(HttpServletResponse response, HttpServletRequest request, Designtopic designtopic) throws IOException {
         Map<String, Object> res = new HashMap<>();
-        res.put("is", false);
+        res.put("isSuccessful", false);
         String page = request.getParameter("page");
         String num = request.getParameter("num");
         if(page.equals("")) {
-            res.put("msg", "page不能为空！");
+            res.put("message", "page不能为空！");
         } else if(num.equals("")) {
-            res.put("msg", "num不能为空！");
+            res.put("message", "num不能为空！");
         } else {
             Map<String, Object> map  = this.designtopicService.listDesigntopicByCurr(Integer.parseInt(page), Integer.parseInt(num));
             if(map != null) {
-                res.put("is", true);
+                res.put("isSuccessful", true);
                 res.put("list", map.get("list"));
                 res.put("count", map.get("size"));
                 res.put("total", map.get("total"));
             } else {
-                res.put("msg", "查询失败！");
+                res.put("message", "查询失败！");
             }
         }
         return res;
@@ -48,17 +48,17 @@ public class DesigntopicController {
     @RequestMapping("/getDesigntopicById")
     public Map<String, Object> getDesigntopicById(HttpServletResponse response, HttpServletRequest request, Designtopic designtopic) throws IOException {
         Map<String, Object> res = new HashMap<>();
-        res.put("is", false);
+        res.put("isSuccessful", false);
         Integer id = designtopic.getId();
         if(id==null||id.equals("")) {
-            res.put("msg", "id不能为空！");
+            res.put("message", "id不能为空！");
         } else {
             Designtopic data = this.designtopicService.getDesigntopicById(id);
             if(data != null) {
-                res.put("is", true);
+                res.put("isSuccessful", true);
                 res.put("data", data);
             } else {
-                res.put("msg", "获取失败！");
+                res.put("message", "获取失败！");
             }
         }
         return res;
