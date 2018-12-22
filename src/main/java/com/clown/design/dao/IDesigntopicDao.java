@@ -8,4 +8,5 @@ import java.util.Map;
 public interface IDesigntopicDao {
     List<Designtopic> selectDesigntopicByCurr(Map<String, Object> map);
     Integer selectCountDesigntopic();
+    Designtopic selectDesigntopicById(Integer id);
 }
