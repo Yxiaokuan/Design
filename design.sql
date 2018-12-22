@@ -67,7 +67,7 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `id` int(4) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `roleName` varchar(50) NOT NULL COMMENT '角色姓名；登录名',
-  `passWord` varchar(50) NOT NULL COMMENT '登录密码',
+  `password` varchar(50) NOT NULL COMMENT '登录密码',
   `roleType` int(1) NOT NULL COMMENT '角色类型；0-领导，1-管理员',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -96,7 +96,7 @@ CREATE TABLE `teacher` (
   `teacherName` varchar(50) NOT NULL COMMENT '教师姓名；系统登录名',
   `expertiseId` int(4) DEFAULT NULL COMMENT '教师专长ID',
   `collegeId` int(4) DEFAULT NULL COMMENT '院系ID',
-  `passWord` varchar(50) NOT NULL COMMENT '系统登录密码',
+  `password` varchar(50) NOT NULL COMMENT '系统登录密码',
   PRIMARY KEY (`id`),
   KEY `teacher_college_id` (`collegeId`),
   KEY `teacher_expertise_id` (`expertiseId`),
