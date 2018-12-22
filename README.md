@@ -169,7 +169,7 @@
 |:---- |:---- |:---- |:---- |
 | isSuccessful | Boolean | 是否成功 |
 | message | String | 消息 |
-### 设置学生的毕业设计题目
+### 设置学生的毕业设计课题
 接口名：setDesigntopicForStudent
 请求参数：  
 
@@ -185,7 +185,7 @@
 |:---- |:---- |:---- |:---- |
 | isSuccessful | Boolean | 是否成功 |
 | message | String | 消息 |
-### 设置题目的指导老师
+### 设置课题的指导老师
 接口名：setGuideTeacherForDesigntopic
 请求参数：  
 
