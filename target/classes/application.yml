@@ -7,7 +7,7 @@ spring:
       charset: UTF-8
       force: true
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/design?useAffectedRows=true&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    url: jdbc:mysql://127.0.0.1:3306/design?useAffectedRows=true&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT&useAffectedRows=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

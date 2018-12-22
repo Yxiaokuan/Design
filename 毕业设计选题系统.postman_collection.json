@@ -50,7 +50,7 @@
 			"name": "角色",
 			"item": [
 				{
-					"name": "根据ID获取角色信息",
+					"name": "根据角色ID获取角色信息",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -85,7 +85,7 @@
 			"name": "毕业设计选题",
 			"item": [
 				{
-					"name": "分页获取毕业设计选题",
+					"name": "分页获取不同状态的毕业设计选题",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -94,7 +94,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/designtopic/listDesigntopicByCurr?page=1&num=2",
+							"raw": "http://localhost:8080/designtopic/listDesigntopicByCurr?page=1&num=8&status=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -112,8 +112,13 @@
 								},
 								{
 									"key": "num",
-									"value": "2",
+									"value": "8",
 									"description": "每页数量"
+								},
+								{
+									"key": "status",
+									"value": "2",
+									"description": "可选。课题审核状态；0-未审核，1-审核中，2-审核通过，3-审核未通过"
 								}
 							]
 						}
@@ -145,6 +150,42 @@
 									"key": "id",
 									"value": "1",
 									"description": "题目ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据ID修改题目审核状态",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/designtopic/setDesigntopicInStatusById?id=14&status=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"designtopic",
+								"setDesigntopicInStatusById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "14",
+									"description": "题目ID"
+								},
+								{
+									"key": "status",
+									"value": "2",
+									"description": "课题审核状态；0-未审核，1-审核中，2-审核通过，3-审核未通过"
 								}
 							]
 						}

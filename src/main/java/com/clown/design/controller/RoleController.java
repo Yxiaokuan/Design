@@ -49,7 +49,7 @@ public class RoleController {
         if(roleName==null||roleName.equals("")) {
             map.put("message", "roleName不能为空！");
         } else if(password==null||password.equals("")) {
-            map.put("message", "passWord不能为空！");
+            map.put("message", "password不能为空！");
         } else{
             Role res = this.roleSerivce.verifyRole(roleName, password);
             if(res != null) {

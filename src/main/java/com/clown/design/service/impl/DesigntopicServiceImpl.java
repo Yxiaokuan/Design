@@ -27,12 +27,33 @@ public class DesigntopicServiceImpl implements IDesigntopicService {
         List<Designtopic> list = this.designtopicDao.selectDesigntopicByCurr(req);
         res.put("list", list);
         res.put("size", list.size());
-        res.put("total", this.designtopicDao.selectCountDesigntopic());
+        res.put("total", this.designtopicDao.selectCountDesigntopic(null));
+        return res;
+    }
+
+    @Override
+    public Map<String, Object> listDesigntopicByCurr(Integer page, Integer num, Integer status) {
+        Map<String, Object> req = new HashMap<>();
+        Map<String, Object> res = new HashMap<>();
+        Integer start = page==1?0:page*num-num;
+        Integer size = num;
+        req.put("start", start);
+        req.put("size", size);
+        req.put("status", status);
+        List<Designtopic> list = this.designtopicDao.selectDesigntopicByCurr(req);
+        res.put("list", list);
+        res.put("size", list.size());
+        res.put("total", this.designtopicDao.selectCountDesigntopic(status));
         return res;
     }
 
     @Override
     public Designtopic getDesigntopicById(Integer id) {
         return this.designtopicDao.selectDesigntopicById(id);
+    }
+
+    @Override
+    public Integer setDesigntopicInStatusById(Integer id, Integer status) {
+        return this.designtopicDao.updataDesigntopicInStatusById(id, status);
     }
 }

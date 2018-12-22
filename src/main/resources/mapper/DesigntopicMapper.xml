@@ -16,11 +16,17 @@
 
     <select id="selectDesigntopicByCurr" parameterType="Integer" resultMap="designtopicResult"  >
         SELECT * FROM designtopic
+        <if test="status!=null">
+            WHERE status = #{status}
+        </if>
         LIMIT #{start}, #{size}
     </select>
 
-    <select id="selectCountDesigntopic" resultType="Integer">
+    <select id="selectCountDesigntopic" parameterType="Integer" resultType="Integer">
         SELECT count(*) AS total from designtopic
+        <if test="status!=null">
+            WHERE status = #{status}
+        </if>
     </select>
 
     <select id="selectDesigntopicById" resultMap="designtopicResult">
@@ -34,5 +40,9 @@
     <select id="selectGuide_teacherById" resultType="com.clown.design.entity.Teacher">
         SELECT * FROM teacher WHERE id = #{id}
     </select>
+
+    <update id="updataDesigntopicInStatusById">
+        UPDATE designtopic SET status = #{status} WHERE id = #{id}
+    </update>
 
 </mapper>
