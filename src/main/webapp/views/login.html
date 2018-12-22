@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSM_Design - 登录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../plugins/layui/css/layui.css" />
+
+  <style>
+    body {
+      background: #f5f5f5;
+    }
+    
+    .form-box {
+      margin: 200px auto;
+      width: 420px;
+      background: #fff;
+    }
+    .form-box-title h1 {
+      padding: 10px 0;
+      font-weight: 300;
+      font-size: 30px;
+      color: #000;
+      text-align: center;
+    }
+    .form-box-title h2 {
+      font-weight: 300;
+      font-size: 16px;
+      color: #999;
+      text-align: center;
+    }
+    .form-box-content {
+      padding: 20px;
+    }
+    .form-box-content .layui-form-pane .layui-form-label {
+      box-sizing: border-box;
+      padding: 8px;
+      width: 50px;
+    }
+    .form-box-content .layui-form-pane .layui-input-block {
+      margin-left: 50px;
+    }
+
+    .form-box-content .layui-btn {
+      width: 100%;
+    }
+  
+  </style>
+
+</head>
+<body>
+  <div class="layui-main">
+    <div class="form-box">
+      <div class="form-box-title">
+        <h1>SSM_Design</h1>
+        <h2>基于SSM的毕业设计选题系统</h2>
+      </div>
+      <div class="form-box-content">
+        <form class="layui-form layui-form-pane">
+          <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+            <div class="layui-input-block">
+              <input type="text" name="roleName" required="" lay-verify="required" placeholder="请输入登录名" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+            <div class="layui-input-block">
+              <input type="text" name="password" required="" lay-verify="required" placeholder="请输入登录密码" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 110px">登录类型</label>
+            <div class="layui-input-block" style="margin-left: 110px">
+              <select name="roleType" lay-verify="required">
+                <option value=""></option>
+                <option value="0">领导</option>
+                <option value="1">管理员</option>
+                <option value="2">教师</option>
+                <option value="3">学生</option>
+              </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="请选择" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit" style=""><dd lay-value="" class="layui-select-tips layui-this">请选择</dd><dd lay-value="0" class="">北京</dd><dd lay-value="1" class="">上海</dd><dd lay-value="2" class="">广州</dd><dd lay-value="3" class="">深圳</dd><dd lay-value="4" class="">杭州</dd></dl></div>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="login">登录</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+</body>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script src="../js/constant.js"></script>
+<script>
+  layui.use(["layer", "form"], function() {
+    var layer = layui.layer,
+      form = layui.form;
+
+      form.on("submit(login)", function(obj) {
+        var roleType = obj.field.roleType;
+        console.log(roleType);
+        
+        var urls = [
+          'http://localhost:8080/role/verifyRole',
+          'http://localhost:8080/role/verifyRole',
+          '',
+          ''
+        ];
+        $.post(urls[roleType], obj.field)
+        .then(function(res) {
+          if(res.isSuccessful) {
+            console.log(res);
+            
+            layer.msg(res.message, {time: 1000,end: function() {
+              cookieOpMod.set("roleId", res.roleId);
+              cookieOpMod.set("roleType", res.roleType);
+              window.location.href = "../index.html";
+            }});
+          } else {
+            layer.msg(res.message||"请求失败！");
+          }
+        });
+        return false;
+      });
+
+  });
+</script>
+</html>

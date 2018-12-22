@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>SSM_Design</title>
+  
+  <link rel="stylesheet" href="./css/reset.css" />
+  <link rel="stylesheet" href="./plugins/layui/css/layui.css" />
+
+  <style>
+    iframe {
+      box-sizing: border-box;
+      width: 100%;
+      height: calc(100% - 3px);
+    }
+
+    .layui-nav-tree>li.layui-nav-item:not(:first-of-type) {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body class="layui-layout-body">
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo">毕业设计选题系统</div>
+      <!-- 头部区域（可配合layui已有的水平导航） -->
+      <ul class="layui-nav layui-layout-left">
+        <!-- <li class="layui-nav-item"><a href="">控制台</a></li>
+        <li class="layui-nav-item"><a href="">商品管理</a></li>
+        <li class="layui-nav-item"><a href="">用户</a></li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">其它系统</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">邮件管理</a></dd>
+            <dd><a href="">消息管理</a></dd>
+            <dd><a href="">授权管理</a></dd>
+          </dl>
+        </li> -->
+      </ul>
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item"><a href="javascript:;">欢迎你，<span id="loginName">管理员</span></a></li>
+        <li class="layui-nav-item"><a href="javascript:;" id="singout">退出</a></li>
+        <li class="layui-nav-item"><a href="./views/login.html">系统登录</a></li>
+      </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+      <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="navTree">
+          <li class="layui-nav-item layui-this"><a href="javascript:;" page="./views/designTopic.html">课题一览</a></li>
+          <li class="layui-nav-item"><a href="javascript:;" page="./views/designTopicReview.html">选题审核</a></li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">教学秘书</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;" page="./views/teacherList.html">教师基本信息</a></dd>
+              <dd><a href="javascript:;">学生基本信息</a></dd>
+              <dd><a href="javascript:;">数据库备份</a></dd>
+              <dd><a href="javascript:;">课题管理</a></dd>
+            </dl>
+          </li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">教师平台</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;">个人资料</a></dd>
+              <dd><a href="javascript:;">课题上报</a></dd>
+            </dl>
+          </li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">学生平台</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;">个人资料</a></dd>
+            </dl>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <iframe src="./views/designTopic.html" frameborder="0"></iframe>
+      <!-- <div style="padding: 15px;">内容主体区域</div> -->
+    </div>
+
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      SSM_Design - 基于SSM的毕业设计选题系统——By xxxx毕业设计作品
+    </div>
+  </div>
+</body>
+
+<script type="html/text">
+
+  
+
+</script>
+
+<script src="./js/jquery-3.2.1.min.js"></script>
+<script src="./js/jquery.cookie.js"></script>
+<script src="./plugins/layui/layui.js"></script>
+<script src="./js/constant.js"></script>
+<script>
+  //JavaScript代码区域
+  layui.use(['element', 'layer', 'laytpl'], function () {
+    var element = layui.element,
+      layer = layui.layer,
+      laytpl = layui.laytpl;
+  
+
+    // 监听导航菜单的点击
+    element.on('nav(navTree)', function(elem){
+      $("iframe").attr("src", elem.attr("page"));
+    });
+
+    $("#singout").click(function() {
+      cookieOpMod.clear("roleId");
+      cookieOpMod.clear("roleType");
+      window.location.href = "./views/login.html";
+    });
+
+    // var $NavItem = $(".layui-nav-item");
+
+    var roleType = $.cookie("roleType"),
+      roleId = $.cookie("roleId");
+    if(!roleType) {
+
+    } else if(roleType==0) {
+      $(".layui-layout-right .layui-nav-item").eq(2).hide();
+      $(".layui-nav-tree>.layui-nav-item").eq(1).show();
+      getRoleById(1);
+    } else if(roleType==1) {
+      $(".layui-layout-right .layui-nav-item").eq(2).hide();
+      $(".layui-nav-tree>.layui-nav-item").eq(2).show();
+      getRoleById(1);
+    }
+
+    function getRoleById(id) {
+      return $.getJSON("http://localhost:8080/role/getRoleById?id=" + roleId)
+      .done(function(res){
+        if(res.isSuccessful) {
+          $("#loginName").html(res.data.roleName);
+        } else {
+          layer.msg(res.msg||"请求失败！");
+        }
+        
+      })
+      .fail(function(err) {
+        layer.msg("服务器响应失败！");
+        console.log(err);
+      });
+    }
+  });
+</script>
+
+</html>

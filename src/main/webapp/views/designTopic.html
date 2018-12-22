@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSM_Design - </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_977780_p6rmctl39h.css" />
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+  <link rel="stylesheet" href="../plugins/layui/css/layui.css" />
+
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      height: 100%;
+      background: #f5f5f5;
+    }
+    .mian {
+      box-sizing: border-box;
+      position: relative;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 1140px;
+      height: 100%;
+    }
+    .item {
+      box-sizing: border-box;
+      padding: 10px;
+      min-height: 165px;
+    }
+    .btns {
+      padding: 10px 0;
+      text-align: right;
+    }
+    .page {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .layui-laypage a:hover {
+      color: #1E9FFF;
+    }
+    .view-first .mask {
+      background-color: rgba(135, 207, 235, 0.68);
+    }
+    .layui-form-label {
+      width: 100px;
+    }
+
+
+
+
+
+
+
+  </style>
+
+</head>
+
+<body>
+  <div class="mian clearfix">
+    <div id="itemBox" class="clearfix"></div>
+
+
+
+    <div id="page" class="page"></div>
+  </div>
+</body>
+<script type="text/html" id="viewDetailTpl">
+
+  <div class="layui-form" style="padding: 20px">
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">设计题目</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" value="{{d.topic}}" disabled/>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">设计要求</label>
+      <div class="layui-input-block">
+        <textarea style="resize: none" class="layui-textarea" disabled>{{d.description}}</textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">出题教师</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" value="{{d.dish_teacher.teacherName||''}}" disabled/>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">指导教师</label>
+      <div class="layui-input-block">
+          <input type="text" class="layui-input" value="{{d.guide_teacher?d.guide_teacher.teacherName:''}}" disabled/>
+      </div>
+    </div>
+  </div>
+
+</script>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script>
+  layui.use(["layer", "form", "laytpl", "laypage"], function () {
+    var layer = layui.layer,
+      form = layui.form,
+      laytpl = layui.laytpl,
+      laypage = layui.laypage;
+
+    var itemTpl = laytpl([
+      '<div class="layui-col-md3">',
+      '<div class="item">',
+      '<div class="grid1">',
+      '<div class="view view-first">',
+      '<div class="index_img"><img src="https://fakeimg.pl/270x180/" class="img-responsive" alt=""></div>',
+      // '<div class="sale">$2.980</div>',
+      '<div class="mask">',
+      '<div class="info viewDetails" style="margin-top: 100px; text-align: center" data-id="{{d.id}}"><i class="iconfont icon-sousuo"></i>查看详情</div>',
+      '<ul class="mask_img">',
+      // '<li class="star"><img src="https://fakeimg.pl/90x21/" alt=""></li>',
+      // '<li class="set"><img src="https://fakeimg.pl/32x25/" alt=""></li>',
+      '<div class="clearfix"></div>',
+      '</ul>',
+      '</div>',
+      '</div>',
+      // '<i class="home"></i>',
+      '<div class="inner_wrap">',
+      '<h3>{{d.topic}}</h3>',
+      '<ul class="star1">',
+      '<h4 class="green">{{d.dish_teacher.teacherName}}</h4>',
+      // '<li><a href="#"> <img src="images/star1.png" alt="">(236)</a></li>',
+      '</ul>',
+      '</div>',
+      '</div>',
+      '</div>',
+      '</div>'
+    ].join(""));
+
+    var roleType = $.cookie("roleType"),
+      roleId = $.cookie("roleId");
+
+    listDesigntopicByCurr(1);
+
+    function listDesigntopicByCurr(num) {
+      return $.post("http://localhost:8080/designtopic/listDesigntopicByCurr", {
+          page: num,
+          num: 8,
+          status: 2
+        })
+        .done(function (res) {
+          console.log(res);
+          $("#itemBox").html("");
+          layui.each(res.list, function (index, item) {
+            $("#itemBox").append(itemTpl.render(item));
+          });
+          $(".viewDetails").click(function () {
+            var id = $(this).attr("data-id");
+            var index = layer.load(2);
+            $.post("http://localhost:8080/designtopic/getDesigntopicById?id=" + id)
+            .done(function (res) {
+              if (res.isSuccessful) {
+                console.log(res);
+                var btn = [];
+                // if(roleId == 1) 
+                
+                layer.close(index);
+                var content = laytpl($("#viewDetailTpl").html()).render(res.data);
+                layer.open({
+                  type: 1,
+                  scrollbar: false,
+                  title: "选题详情",
+                  content: content,
+                  area: ["500px", "500px"],
+                  btn: btn
+                });
+              } else {
+
+              }
+            }).fail(function(err) {
+              layer.msg("服务器响应失败！");
+              console.log(err);
+            });
+          });
+          
+          if (num != 1) return;
+          
+          laypage.render({
+            elem: "page",
+            limit: 8,
+            count: res.total,
+            theme: "#1E9FFF",
+            jump: function (obj, first) {
+              if (!first) {
+                listDesigntopicByCurr(obj.curr);
+              }
+            }
+          });
+        })
+        .fail(function(err) {
+          layer.msg("服务器响应失败！");
+          console.log(err);
+          
+        });;
+
+    }
+
+
+    // console.log(itemTpl);
+    // var arr = new Array(9)
+    // layui.each(arr, function(index, item) {
+    //   $("#itemBox").append(itemTpl.render({}));
+    // });
+
+
+  });
+</script>
+
+</html>

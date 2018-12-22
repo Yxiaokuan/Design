@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSM_Design - </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_977780_p6rmctl39h.css" />
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+  <link rel="stylesheet" href="../plugins/layui/css/layui.css" />
+
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      height: 100%;
+      background: #f5f5f5;
+    }
+    .mian {
+      box-sizing: border-box;
+      position: relative;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 1140px;
+      height: 100%;
+    }
+    .item {
+      box-sizing: border-box;
+      padding: 10px;
+      min-height: 165px;
+    }
+    .btns {
+      padding: 10px 0;
+      text-align: right;
+    }
+    .page {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .layui-laypage a:hover {
+      color: #1E9FFF;
+    }
+    .view-first .mask {
+      background-color: rgba(135, 207, 235, 0.68);
+    }
+    .layui-form-label {
+      width: 100px;
+    }
+
+    .layui-table-view .layui-btn {
+      padding: 4px 18px;
+      height: auto;
+      line-height: normal;
+    }
+
+    body .Review-topic-class .layui-layer-btn1 {
+      border: none;
+      background-color: #E72F17;
+      color: #fff;
+    }
+
+
+
+  </style>
+
+</head>
+
+<body>
+  <div class="mian clearfix">
+    <div id="table" lay-filter="table"></div>
+    <!-- <div id="itemBox" class="clearfix"></div>
+    <div id="page" class="page"></div> -->
+  </div>
+</body>
+<script type="text/html" id="viewDetailTpl">
+
+  <div class="layui-form" style="padding: 20px">
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">设计题目</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" value="{{d.topic}}" disabled/>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">设计要求</label>
+      <div class="layui-input-block">
+        <textarea style="resize: none" class="layui-textarea" disabled>{{d.description}}</textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">出题教师</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" value="{{d.dish_teacher.teacherName||''}}" disabled/>
+      </div>
+    </div>
+    <!-- <div class="layui-form-item">
+      <label class="layui-form-label" style="text-align: left">指导教师</label>
+      <div class="layui-input-block">
+          <input type="text" class="layui-input" value="{{d.guide_teacher?d.guide_teacher.teacherName:''}}" disabled/>
+      </div>
+    </div> -->
+  </div>
+
+</script>
+
+<script type="text/html" id="dish_teacherTpl">
+  {{d.dish_teacher.teacherName}}
+</script>
+<script type="text/html" id="toolbar">
+  <button class="layui-btn" lay-event="view">查看详情</button>
+  <!-- <button class="layui-btn" lay-event="reView" status="2">审核通过</button> -->
+  <!-- <button class="layui-btn" lay-event="reView" status="3">审核不通过</button> -->
+</script>
+
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script>
+  layui.use(["layer", "form", "laytpl", "laypage", "table"], function () {
+    var layer = layui.layer,
+      form = layui.form,
+      laytpl = layui.laytpl,
+      laypage = layui.laypage,
+      table = layui.table;
+
+    var roleType = $.cookie("roleType"),
+    roleId = $.cookie("roleId");
+
+    if(!roleId) {
+      parent.layer.msg("你好，请先登录！", { icon: 2, btn: ["确定"], time: 0, shade: 0.3, scrollbar: false }, function() {
+        parent.window.location.href = "./views/login.html";
+      });
+    }
+
+    var dataTable = table.render({
+      elem: "#table",
+      url: "http://localhost:8080/designtopic/listDesigntopicByCurr",
+      request: {
+        pageName: "page",
+        limitName: "num"
+      },
+      where: {
+        status: 0
+      },
+      response: {
+        statusName: "isSuccessful",
+        statusCode: true,
+        // msgName: "",
+        countName: "total",
+        dataName: "list"
+      },
+      page: true,
+      cols: [[
+        { field: "id", title: "ID", width: 80 },
+        { field: "topic", title: "题目", width: 500 },
+        { field: "", title: "提出老师", width: 120, templet: "#dish_teacherTpl" },
+        { field: "", title: "提出老师", toolbar: "#toolbar" },
+      ]]
+    });
+
+    table.on("tool(table)", function(obj) {
+      console.log(obj);
+      
+      var event = obj.event;
+      if(event === "view") {
+        // var id = $(this).attr("data-id");
+        var index = layer.load(2);
+        $.post("http://localhost:8080/designtopic/getDesigntopicById?id=" + obj.data.id)
+        .done(function (res) {
+          if (res.isSuccessful) {
+            layer.close(index);
+            var content = laytpl($("#viewDetailTpl").html()).render(res.data);
+            layer.open({
+              type: 1,
+              scrollbar: false,
+              title: "选题详情",
+              content: content,
+              area: ["500px", "380px"],
+              btn: ["审核通过", "审核不通过", "取消"],
+              skin: 'Review-topic-class',
+              yes: function(index, layero) {
+                setDesigntopicInStatusById(obj.data.id, 2);
+              },
+              btn2: function(index, layero) {
+                setDesigntopicInStatusById(obj.data.id, 3);
+                return false;
+              }
+            });
+          } else {
+
+          }
+        }).fail(function(err) {
+          layer.msg("服务器响应失败！");
+          console.log(err);
+        });
+      } else if(event === "reView") {
+
+      }
+      
+    });
+
+    function setDesigntopicInStatusById(id, status) {
+      return $.getJSON("http://localhost:8080/designtopic/setDesigntopicInStatusById", {
+        id: id,
+        status: status
+      })
+      .done(function(res2) {
+        if(res2.isSuccessful) {
+          layer.msg("审核成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
+        } else {
+          layer.msg("审核失败！");
+        }
+      })
+      .fail(function(err) {
+        layer.msg("服务器响应失败！");
+        console.log(err);
+      });
+    }
+  });
+</script>
+
+</html>
