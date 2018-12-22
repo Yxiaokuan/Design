@@ -8,15 +8,13 @@
         <result column="topic" property="topic"/>
         <result column="description" property="description"/>
         <result column="dish_teacherId" property="dish_teacherId"/>
-        <result column="dish_teacherId" property="guide_teacherId"/>
+        <result column="guide_teacherId" property="guide_teacherId"/>
         <result column="status" property="status"/>
-        <collection property="teachers" ofType="com.clown.design.entity.Teacher">
-            <id column="teacher_id" property="id"/>
-            <result column="teacherName" property="teacherName"/>
-        </collection>
+        <association property="dish_teacher" column="dish_teacherId" select="selectDish_teacherById" />
+        <association property="guide_teacher" column="guide_teacherId" select="selectDish_teacherById" />
     </resultMap>
 
-    <select id="selectDesigntopicByCurr" parameterType="Integer" resultType="com.clown.design.entity.Designtopic">
+    <select id="selectDesigntopicByCurr" parameterType="Integer" resultMap="designtopicResult"  >
         SELECT * FROM designtopic
         LIMIT #{start}, #{size}
     </select>
@@ -26,15 +24,15 @@
     </select>
 
     <select id="selectDesigntopicById" resultMap="designtopicResult">
-        SELECT
-            *,
-            teacher.id AS teacher_id
-        FROM
-            designtopic
-        LEFT JOIN teacher ON designtopic.dish_teacherId = teacher.id
-        OR designtopic.guide_teacherId = teacher.id
-        WHERE
-            designtopic.id = #{id}
+        SELECT * FROM designtopic WHERE id = #{id}
+    </select>
+
+    <select id="selectDish_teacherById" resultType="com.clown.design.entity.Teacher">
+        SELECT * FROM teacher WHERE id = #{id}
+    </select>
+
+    <select id="selectGuide_teacherById" resultType="com.clown.design.entity.Teacher">
+        SELECT * FROM teacher WHERE id = #{id}
     </select>
 
 </mapper>

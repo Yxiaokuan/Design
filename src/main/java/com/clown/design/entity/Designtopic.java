@@ -13,5 +13,7 @@ public class Designtopic {
     private Integer guide_teacherId;
     private Integer status;
 
-    private List<Teacher> teachers;
+//    private List<Teacher> teachers;
+    private Teacher dish_teacher;
+    private Teacher guide_teacher;
 }
