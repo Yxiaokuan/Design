@@ -10,6 +10,11 @@
         <result column="collegeId" property="collegeId"/>
         <result column="classId" property="classId"/>
         <result column="topicId" property="topicId"/>
+        <result column="password" property="password"/>
+        <association property="classInfo" javaType="com.clown.design.entity.ClassInfo">
+            <id column="class_id" property="id"/>
+            <result column="className" property="className"/>
+        </association>
     </resultMap>
 
     <select id="selectStudentById" parameterType="Integer" resultType="com.clown.design.entity.Student">
@@ -17,9 +22,59 @@
     </select>
 
     <update id="updatePasswordById" parameterType="Map">
-        UPDATE student SET password=#{newPassword} WHERE id = #{id} AND password = #{password}
+        UPDATE student SET password=#{newPassword} WHERE id = #{id}
     </update>
 
+    <select id="selectAllStudentByCurr" resultMap="studentResult">
+        SELECT
+            *,
+            class.id AS class_id
+        FROM
+            student
+        LEFT JOIN class ON student.classId = class.id
+        <if test="classId!=null">
+            WHERE class.id = #{classId}
+        </if>
+        LIMIT #{start}, #{size}
+    </select>
 
+    <select id="selectCountStudent" parameterType="Integer" resultType="Integer">
+        SELECT count(*) AS total from student
+        LEFT JOIN class ON student.classId = class.id
+        <if test="classId!=null">
+            WHERE class.id = #{classId}
+        </if>
+    </select>
+
+    <insert id="insertStudent">
+        INSERT INTO student ( studentName, studentIdentifier, collegeId, classId, password )
+        VALUES ( #{studentName}, #{studentIdentifier}, #{collegeId}, #{classId}, #{password} )
+    </insert>
+
+    <update id="updateStudent">
+        UPDATE student
+        <trim prefix="set" suffixOverrides=",">
+            <if test="studentName!=null">studentName=#{studentName},</if>
+            <if test="studentIdentifier!=null">studentIdentifier=#{studentIdentifier},</if>
+            <if test="collegeId!=null">collegeId=#{collegeId},</if>
+            <if test="classId!=null">classId=#{classId},</if>
+            <if test="password!=null">password=#{password},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteStudentById">
+        DELETE FROM student WHERE id = #{id}
+    </delete>
+
+    <select id="selectStudentByStudentNameAndPassword" resultType="com.clown.design.entity.Student">
+        SELECT * FROM student WHERE studentName = #{studentName} AND password = #{password}
+    </select>
+
+    <update id="updateStudentInTopicIdById">
+        UPDATE student SET
+            topicId = #{topicId}
+        WHERE id = #{id}
+    </update>
 
 </mapper>

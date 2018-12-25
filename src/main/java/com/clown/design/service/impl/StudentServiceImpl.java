@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
-    private Student student ;
     @Autowired
     private IStudentDao studentDao;
     
@@ -31,9 +31,62 @@ public class StudentServiceImpl implements IStudentService {
     }
     @Override
     public Student getStudentById(Integer id){
-        student =studentDao.selectStudentById(id);
-        return student;
+        return this.studentDao.selectStudentById(id);
     }
-    
+
+    @Override
+    public Map<String, Object> listStudentByCurr(Integer page, Integer num) {
+        Map<String, Object> req = new HashMap<>();
+        Map<String, Object> res = new HashMap<>();
+        Integer start = page==1?0:page*num-num;
+        req.put("start", start);
+        req.put("size", num);
+        List<Student> list = this.studentDao.selectAllStudentByCurr(req);
+        res.put("list", list);
+        res.put("size", list.size());
+        res.put("total", this.studentDao.selectCountStudent(null));
+        return res;
+    }
+
+    @Override
+    public Map<String, Object> listStudentByCurr(Integer page, Integer num, Integer classId) {
+        Map<String, Object> req = new HashMap<>();
+        Map<String, Object> res = new HashMap<>();
+        Integer start = page==1?0:page*num-num;
+        req.put("start", start);
+        req.put("size", num);
+        req.put("classId", classId);
+        List<Student> list = this.studentDao.selectAllStudentByCurr(req);
+        res.put("list", list);
+        res.put("size", list.size());
+        res.put("total", this.studentDao.selectCountStudent(classId));
+        return res;
+    }
+
+    @Override
+    public Integer addStudent(Student student) {
+        return this.studentDao.insertStudent(student);
+    }
+
+    @Override
+    public Integer updateStudent(Student student) {
+        return this.studentDao.updateStudent(student);
+    }
+
+    @Override
+    public Integer delStudentById(Integer id) {
+        return this.studentDao.deleteStudentById(id);
+    }
+
+    @Override
+    public Student verifyStudent(String studentName, String password) {
+        return this.studentDao.selectStudentByStudentNameAndPassword(studentName, password);
+    }
+
+    @Override
+    public Integer setTopicIdById(Integer topicId, Integer id) {
+        return this.studentDao.updateStudentInTopicIdById(topicId, id);
+    }
+
 
 }

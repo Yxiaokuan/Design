@@ -54,6 +54,10 @@
       width: 100px;
     }
 
+    .form-item {
+      float: left;
+    }
+
 
 
 
@@ -66,15 +70,30 @@
 
 <body>
   <div class="mian clearfix">
+    <div class="layui-form clearfix">
+      <div class="form-item">
+        <label class="layui-form-label">选择院系</label>
+        <div class="layui-input-inline">
+          <select name="" id="college" lay-filter="college"></select>
+        </div>
+      </div>
+      <div class="form-item">
+        <label class="layui-form-label">搜索老师</label>
+        <div class="layui-input-inline" style="width: 300px">
+          <input type="text" id="teacherName" class="layui-input" placeholder="请输入老师全名或者姓名关键字">
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="layui-input-inline" >
+          <button id="search" class="layui-btn">搜索</button>
+        </div>
+      </div>
+    </div>
     <div id="itemBox" class="clearfix"></div>
-
-
-
     <div id="page" class="page"></div>
   </div>
 </body>
 <script type="text/html" id="viewDetailTpl">
-
   <div class="layui-form" style="padding: 20px">
     <div class="layui-form-item">
       <label class="layui-form-label" style="text-align: left">设计题目</label>
@@ -101,7 +120,6 @@
       </div>
     </div>
   </div>
-
 </script>
 <script src="../js/jquery-3.2.1.min.js"></script>
 <script src="../js/jquery.cookie.js"></script>
@@ -143,18 +161,42 @@
     ].join(""));
 
     var roleType = $.cookie("roleType"),
-      roleId = $.cookie("roleId");
+      roleId = $.cookie("roleId"),
+      topicId = $.cookie("topicId"),
+      collegeId = -1,
+      teacherName = ""
+      status = "";
 
-    listDesigntopicByCurr(1);
+    listCollege()
+      .then(function (res) {
+        $.each(res, function (index, item) {
+          $("#college").append('<option value="' + item.id + '">' + item.collegeName + '</option>');
+        });
+        collegeId = res[0].id;
+        listDesigntopicByCurr(1);
+        form.on("select(college)", function (obj) {
+          collegeId = obj.value;
+          teacherName = "";
+          listDesigntopicByCurr(1);
+        });
+        form.render('select');
+      })
+      $("#search").click(function() {
+        collegeId = "";
+        teacherName = $("#teacherName").val();
+        listDesigntopicByCurr(1);
+      });
+    // listDesigntopicByCurr(1);
 
     function listDesigntopicByCurr(num) {
       return $.post("http://localhost:8080/designtopic/listDesigntopicByCurr", {
           page: num,
           num: 8,
-          status: 2
+          collegeId: collegeId,
+          teacherName: teacherName
         })
         .done(function (res) {
-          console.log(res);
+          // console.log(res);
           $("#itemBox").html("");
           layui.each(res.list, function (index, item) {
             $("#itemBox").append(itemTpl.render(item));
@@ -163,33 +205,74 @@
             var id = $(this).attr("data-id");
             var index = layer.load(2);
             $.post("http://localhost:8080/designtopic/getDesigntopicById?id=" + id)
-            .done(function (res) {
-              if (res.isSuccessful) {
-                console.log(res);
-                var btn = [];
-                // if(roleId == 1) 
-                
-                layer.close(index);
-                var content = laytpl($("#viewDetailTpl").html()).render(res.data);
-                layer.open({
-                  type: 1,
-                  scrollbar: false,
-                  title: "选题详情",
-                  content: content,
-                  area: ["500px", "500px"],
-                  btn: btn
-                });
-              } else {
+              .done(function (res) {
+                if (res.isSuccessful) {
+                  var btn = [];
+                  if (roleType == 2 && res.data.guide_teacher && res.data.guide_teacher.id != roleId) {
+                    btn[0] = "指导该题";
+                  }
+                  if (roleType == 3 && !topicId) btn[0] = "选择该题";
 
-              }
-            }).fail(function(err) {
-              layer.msg("服务器响应失败！");
-              console.log(err);
-            });
+                  layer.close(index);
+                  var content = laytpl($("#viewDetailTpl").html()).render(res.data);
+                  layer.open({
+                    type: 1,
+                    scrollbar: false,
+                    title: "选题详情",
+                    content: content,
+                    area: ["500px", "500px"],
+                    btn: btn,
+                    yes: function () {
+                      if (roleType == 2 && res.data.guide_teacher && res.data.guide_teacher.id !=
+                        roleId) {
+                        $.getJSON(
+                            "http://localhost:8080/designtopic/setDesigntopicInGuideTeacherById", {
+                              id: id,
+                              guide_teacherId: roleId
+                            })
+                          .done(function (res) {
+                            if (res.isSuccessful) {
+                              layer.msg("选定成功！", {
+                                end: function () {
+                                  layer.closeAll()
+                                }
+                              });
+                            } else {
+                              layer.msg("选定失败！");
+                            }
+                          })
+                      } else if (roleType == 3 && !topicId) {
+                        $.getJSON("http://localhost:8080/student/setTopicIdById", {
+                            id: roleId,
+                            topicId: id
+                          })
+                          .done(function (res) {
+                            if (res.isSuccessful) {
+                              layer.msg("选定成功！", {
+                                end: function () {
+                                  layer.closeAll()
+                                }
+                              });
+                            } else {
+                              layer.msg("选定失败！");
+                            }
+                          })
+                      }
+
+                    }
+                  });
+
+                } else {
+
+                }
+              }).fail(function (err) {
+                layer.msg("服务器响应失败！");
+                console.log(err);
+              });
           });
-          
+
           if (num != 1) return;
-          
+
           laypage.render({
             elem: "page",
             limit: 8,
@@ -202,12 +285,23 @@
             }
           });
         })
-        .fail(function(err) {
+        .fail(function (err) {
           layer.msg("服务器响应失败！");
           console.log(err);
-          
+
         });;
 
+    }
+
+    function listCollege() {
+      return $.getJSON("http://localhost:8080/college/listCollege")
+        .then(function (res) {
+          if (res.isSuccessful) {
+            return res.list;
+          } else {
+
+          }
+        });
     }
 
 

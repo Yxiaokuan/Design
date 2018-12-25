@@ -68,4 +68,110 @@ public class TeacherController {
         }
         return map;
     }
+
+    @RequestMapping("/listTeacherByCurr")
+    public Map<String, Object> listTeacherByCurr(HttpServletResponse response, HttpServletRequest request, Teacher teacher) throws IOException {
+        Map<String, Object> res = new HashMap<>();
+        res.put("isSuccessful", false);
+        String page = request.getParameter("page");
+        String num = request.getParameter("num");
+        if(page.equals("")) {
+            res.put("message", "page不能为空！");
+        } else if(num.equals("")) {
+            res.put("message", "num不能为空！");
+        } else {
+            Map<String, Object> map = this.teacherService.listTeacherByCurr(Integer.parseInt(page), Integer.parseInt(num));
+            if(map != null) {
+                res.put("isSuccessful", true);
+                res.put("list", map.get("list"));
+                res.put("count", map.get("size"));
+                res.put("total", map.get("total"));
+            } else {
+                res.put("message", "查询失败！");
+            }
+        }
+        return res;
+    }
+
+    @RequestMapping("/addTeacher")
+    public Map<String, Object> addTeacher(HttpServletResponse response, HttpServletRequest request, Teacher teacher) throws IOException {
+        Map<String, Object> res = new HashMap<>();
+        res.put("isSuccessful", false);
+        String teacherName = teacher.getTeacherName();
+        String password = teacher.getPassword();
+        if(teacherName==null||teacherName.equals("")) {
+            res.put("message", "teacherName不能为空！");
+        } else if(password==null||password.equals("")) {
+            res.put("message", "passWord不能为空！");
+        } else if(this.teacherService.addTeacher(teacher) != -1) {
+            res.put("isSuccessful", true);
+            res.put("message", "添加成功！");
+        } else {
+            res.put("message", "添加失败！");
+        }
+        return res;
+    }
+
+    @RequestMapping("/updateTeacher")
+    public Map<String, Object> updateTeacher(HttpServletResponse response, HttpServletRequest request, Teacher teacher) throws IOException {
+        Map<String, Object> res = new HashMap<>();
+        res.put("isSuccessful", false);
+        Integer id = teacher.getId();
+        String teacherName = teacher.getTeacherName();
+        String password = teacher.getPassword();
+        if(id==null||id.equals("")) {
+            res.put("message", "id不能为空！");
+        }
+        if(teacherName==null||teacherName.equals("")) {
+            res.put("message", "teacherName不能为空！");
+        } else if(password==null||password.equals("")) {
+            res.put("message", "passWord不能为空！");
+        } else if(this.teacherService.updateTeacher(teacher) != -1) {
+            res.put("isSuccessful", true);
+            res.put("message", "修改成功！");
+        } else {
+            res.put("message", "修改失败！");
+        }
+        return res;
+    }
+
+    @RequestMapping("/delTeacherById")
+    public Map<String, Object> delTeacherById(HttpServletResponse response, HttpServletRequest request, Teacher teacher) throws IOException {
+        Map<String, Object> res = new HashMap<>();
+        res.put("isSuccessful", false);
+        Integer id = teacher.getId();
+        if(id==null||id.equals("")) {
+            res.put("message", "id不能为空！");
+        } else if(this.teacherService.delTeacherById(id) != -1) {
+            res.put("isSuccessful", true);
+            res.put("message", "删除成功！");
+        } else {
+            res.put("message", "删除失败！");
+        }
+        return res;
+    }
+
+    @RequestMapping(value = "verifyTeacher", method = RequestMethod.POST)
+    public Map<String, Object> verifyTeacher(HttpServletRequest request, HttpServletResponse response, Teacher teacher) throws  IOException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("isSuccessful", false);
+        String teacherName = teacher.getTeacherName();
+        String password = teacher.getPassword();
+        if(teacherName==null||teacherName.equals("")) {
+            map.put("message", "roleName不能为空！");
+        } else if(password==null||password.equals("")) {
+            map.put("message", "password不能为空！");
+        } else{
+            Teacher res = this.teacherService.verifyTeacher(teacherName, password);
+            if(res != null) {
+                map.put("isSuccessful", true);
+                map.put("message", "登录成功！");
+                map.put("id", res.getId());
+            } else {
+                map.put("message", "登录失败！");
+            }
+        }
+        return map;
+    }
+
 }

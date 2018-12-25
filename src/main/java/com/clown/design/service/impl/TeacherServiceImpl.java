@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,5 +34,39 @@ public class TeacherServiceImpl implements ITeacherService {
     public Teacher getTeacherById(Integer id){
         teacher =teacherDao.selectTeacherById(id);
         return teacher;
+    }
+
+    @Override
+    public Map<String, Object> listTeacherByCurr(Integer page, Integer num) {
+        Map<String, Object> req = new HashMap<>();
+        Map<String, Object> res = new HashMap<>();
+        Integer start = page==1?0:page*num-num;
+        req.put("start", start);
+        req.put("size", num);
+        List<Teacher> list = this.teacherDao.selectAllTeacherByCurr(req);
+        res.put("list", list);
+        res.put("size", list.size());
+        res.put("total", this.teacherDao.selectCountTeacher());
+        return res;
+    }
+
+    @Override
+    public Integer addTeacher(Teacher teacher) {
+        return this.teacherDao.insertTeacher(teacher);
+    }
+
+    @Override
+    public Integer updateTeacher(Teacher teacher) {
+        return this.teacherDao.updateTeacher(teacher);
+    }
+
+    @Override
+    public Integer delTeacherById(Integer id) {
+        return this.teacherDao.deleteTeacherById(id);
+    }
+
+    @Override
+    public Teacher verifyTeacher(String teacherName, String password) {
+        return this.teacherDao.selectTeacherByTeacherNameAndPassword(teacherName, password);
     }
 }

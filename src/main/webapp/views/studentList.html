@@ -66,6 +66,16 @@
       color: #fff;
     }
 
+    .layui-table-tool-temp {
+      padding-right: 0;
+    }
+    .form-item {
+      float: left;
+    }
+    .form-item-btns {
+      float: right;
+    }
+
 
 
   </style>
@@ -74,35 +84,30 @@
 
 <body>
   <div class="mian clearfix">
+    <div class="layui-form clearfix">
+      <div class="form-item">
+        <label class="layui-form-label">选择院系</label>
+        <div class="layui-input-inline">
+          <select name="" id="college" lay-filter="college"></select>
+        </div>
+      </div>
+      <div class="form-item">
+        <label class="layui-form-label">选择班级</label>
+        <div class="layui-input-inline">
+          <select name="" lay-filter="classInfo" id="classInfo"></select>
+        </div>
+      </div>
+      <div class="form-item form-item-btns">
+        <div class="layui-input-inline">
+          <button id="addStudent" class="layui-btn">添加学生</button>
+        </div>
+      </div>
+    </div>
     <div id="table" lay-filter="table"></div>
     <!-- <div id="itemBox" class="clearfix"></div>
     <div id="page" class="page"></div> -->
   </div>
 </body>
-<script type="text/html" id="viewDetailTpl">
-
-  <div class="layui-form" style="padding: 20px">
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">设计题目</label>
-      <div class="layui-input-block">
-        <input type="text" class="layui-input" value="{{d.topic}}" disabled/>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">设计要求</label>
-      <div class="layui-input-block">
-        <textarea style="resize: none" class="layui-textarea" disabled>{{d.description}}</textarea>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">出题教师</label>
-      <div class="layui-input-block">
-        <input type="text" class="layui-input" value="{{d.dish_teacher.teacherName||''}}" disabled/>
-      </div>
-    </div>
-  </div>
-
-</script>
 
 <script type="text/html" id="expertiseTpl">
   {{d.expertise?d.expertise.expertiseName:""}}
@@ -115,19 +120,25 @@
   <button class="layui-btn" lay-event="del">删除</button>
 </script>
 <script type="text/html" id="topToolbar">
-  <button class="layui-btn" lay-event="add">添加教师</button>
+  
 </script>
 
 <script type="text/html" id="addTpl">
   <form class="layui-form" lay-filter="addForm" style="padding: 20px">
     <div class="layui-form-item">
-      <label class="layui-form-label">教师姓名：</label>
+      <label class="layui-form-label">学生姓名：</label>
       <div class="layui-input-block">
-        <input type="text" class="layui-input" name="teacherName" required="" lay-verify="required" />
+        <input type="text" class="layui-input" name="studentName" required="" lay-verify="required" />
       </div>
     </div>
     <div class="layui-form-item">
-      <label class="layui-form-label">教师院系：</label>
+      <label class="layui-form-label">学生学号：</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" name="studentIdentifier" required="" lay-verify="required" />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">学生院系：</label>
       <div class="layui-input-block">
         <select name="collegeId" id="">
           <option value="">请选择</option>
@@ -138,12 +149,12 @@
       </div>
     </div>
     <div class="layui-form-item">
-      <label class="layui-form-label">教师专长：</label>
+      <label class="layui-form-label">学生班级：</label>
       <div class="layui-input-block">
-        <select name="expertiseId" id="">
+        <select name="classId" id="">
           <option value="">请选择</option>
-          {{# layui.each(d.expertises, function(index, item){ }}
-          <option value="{{item.id}}">{{item.expertiseName}}</option>
+          {{# layui.each(d.classes, function(index, item){ }}
+          <option value="{{item.id}}">{{item.className}}</option>
           {{# }); }}
         </select>
       </div>
@@ -178,9 +189,39 @@
       });
     }
 
+    listCollege()
+    .then(function(res) {
+      $.each(res, function(index, item) {
+        $("#college").append('<option value="'+item.id+'">'+item.collegeName+'</option>');
+      });
+      return listClassByCollegeId(res[0].id);
+    }).then(function(res) {
+      $.each(res, function(index, item) {
+        $("#classInfo").append('<option value="'+item.id+'">'+item.className+'</option>');
+      });
+      dataTable.reload({where: {classId: res[0].id}});
+    })
+    .then(function() {
+      form.on("select(college)", function(obj) {
+        listClassByCollegeId(obj.value)
+        .then(function(res2) {
+            $("#classInfo").html("");
+          $.each(res2, function(index, item) {
+            $("#classInfo").append('<option value="'+item.id+'">'+item.className+'</option>');
+          });
+          form.render('select');
+          dataTable.reload({where: {classId: res2[0].id}});
+        })
+      });
+      form.on("select(classInfo)", function(obj) {
+        dataTable.reload({where: {classId: obj.value}});
+        form.render('select');
+      });
+      form.render('select');
+    });
     var dataTable = table.render({
       elem: "#table",
-      url: "http://localhost:8080/teacher/listTeacherByCurr",
+      url: "http://localhost:8080/student/listStudentByCurr",
       request: {
         pageName: "page",
         limitName: "num"
@@ -195,12 +236,11 @@
       },
       page: true,
       defaultToolbar: [],
-      toolbar: "#topToolbar",
+      // toolbar: "#topToolbar",
       cols: [[
         { field: "id", title: "ID", width: 80 },
-        { field: "teacherName", title: "教师姓名", width: 120 },
-        { field: "", title: "教师院系", width: 120, templet: "#collegeTpl" },
-        { field: "", title: "教师专业", width: 120, templet: "#expertiseTpl" },
+        { field: "studentName", title: "学生姓名", width: 120 },
+        { field: "studentIdentifier", title: "学生学号", width: 180 },
         { field: "", title: "操作", toolbar: "#toolbar" },
       ]]
     });
@@ -213,26 +253,28 @@
         listCollege()
         .then(function(res) {
           data.colleges = res;
-          return listExpertise();
+          // data.collegeId = res[0].id;
+          return listClassByCollegeId(res[0].id);
         })
         .then(function(res) {
-          data.expertises = res;
+          data.classes = res;
+          // data.classId = res[0].id;
         })
         .then(function() {
           var content = laytpl($("#addTpl").html()).render(data);
           layer.open({
             type: 1,
             scrollbar: false,
-            title: "修改教师信息",
+            title: "修改学生信息",
             content: content,
-            area: ["500px", "380px"],
+            area: ["500px", "480px"],
             btn: ["提交", "取消"],
             success: function(index, layero) {
               form.val("addForm", data);
               form.render();
               form.on('submit(add)', function(data){
                 data.field.id = obj.data.id;
-                $.getJSON("http://localhost:8080/teacher/updateTeacher", data.field)
+                $.getJSON("http://localhost:8080/student/updateStudent", data.field)
                 .done(function(res) {
                   if(res.isSuccessful) {
                     layer.msg("修改成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
@@ -250,7 +292,7 @@
         })
       } else if(event === "del") {
         layer.confirm('确定要删除该教师信息吗？', {icon: 3, title:'提示'}, function(index){
-          $.getJSON("http://localhost:8080/teacher/delTeacherById?id=" + obj.data.id)
+          $.getJSON("http://localhost:8080/student/delStudentById?id=" + obj.data.id)
           .then(function(res) {
             if(res.isSuccessful) {
                 layer.msg("删除成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
@@ -261,47 +303,48 @@
         });
       }
     });
-    table.on("toolbar(table)", function(obj) {
-      var event = obj.event;
-      if(event === "add") {
-        var data = {};
-        listCollege()
-        .then(function(res) {
-          data.colleges = res;
-          return listExpertise();
-        })
-        .then(function(res) {
-          data.expertises = res;
-        })
-        .then(function() {
-          var content = laytpl($("#addTpl").html()).render(data);
-          layer.open({
-            type: 1,
-            scrollbar: false,
-            title: "添加教师",
-            content: content,
-            area: ["500px", "380px"],
-            btn: ["提交", "取消"],
-            success: function(index, layero) {
-              form.render('select');
-              form.on('submit(add)', function(data){
-                $.getJSON("http://localhost:8080/teacher/addTeacher", data.field)
-                .done(function(res) {
-                  if(res.isSuccessful) {
-                    layer.msg("添加成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
-                  } else {
-                    layer.msg("添加失败！");
-                  }
-                })
-                return false;
-              });
-            },
-            yes: function(index, layero) {
-              $("#addBtn").trigger("click");
-            },
-          });
-        })
-      }
+    
+    $("#addStudent").click(function() {
+      var data = {};
+      listCollege()
+      .then(function(res) {
+        data.colleges = res;
+        // data.collegeId = res[0].id;
+        return listClassByCollegeId(res[0].id);
+      })
+      .then(function(res) {
+        data.classes = res;
+        // data.classId = res[0].id;
+      })
+      .then(function() {
+        var content = laytpl($("#addTpl").html()).render(data);
+        layer.open({
+          type: 1,
+          scrollbar: false,
+          title: "添加教师",
+          content: content,
+          area: ["500px", "480px"],
+          btn: ["提交", "取消"],
+          success: function(index, layero) {
+            // form.val("addForm", data);
+            form.render('select');
+            form.on('submit(add)', function(data){
+              $.getJSON("http://localhost:8080/student/addStudent", data.field)
+              .done(function(res) {
+                if(res.isSuccessful) {
+                  layer.msg("添加成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
+                } else {
+                  layer.msg("添加失败！");
+                }
+              })
+              return false;
+            });
+          },
+          yes: function(index, layero) {
+            $("#addBtn").trigger("click");
+          },
+        });
+      });
     });
 
     function setDesigntopicInStatusById(id, status) {
@@ -332,8 +375,8 @@
         }
       });
     }
-    function listExpertise() {
-      return $.getJSON("http://localhost:8080/expertise/listExpertise")
+    function listClassByCollegeId(id) {
+      return $.getJSON("http://localhost:8080/classInfo/listClassByCollegeId?collegeId="+id)
       .then(function(res) {
         if(res.isSuccessful) {
           return res.list;

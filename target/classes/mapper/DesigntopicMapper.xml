@@ -10,21 +10,41 @@
         <result column="dish_teacherId" property="dish_teacherId"/>
         <result column="guide_teacherId" property="guide_teacherId"/>
         <result column="status" property="status"/>
+        <result column="fileUrl" property="fileUrl"/>
+        <result column="fileName" property="fileName"/>
         <association property="dish_teacher" column="dish_teacherId" select="selectDish_teacherById" />
         <association property="guide_teacher" column="guide_teacherId" select="selectDish_teacherById" />
     </resultMap>
 
-    <select id="selectDesigntopicByCurr" parameterType="Integer" resultMap="designtopicResult"  >
+    <select id="selectDesigntopicByCurr" resultMap="designtopicResult"  >
         SELECT * FROM designtopic
-        <if test="status!=null">
+        <if test="teacherName==null and status==null and collegeId!=null">
+            INNER JOIN teacher ON designtopic.dish_teacherId = teacher.id
+            INNER JOIN college ON teacher.collegeId = college.id
+            WHERE college.id = #{collegeId} AND status = 2
+        </if>
+        <if test="collegeId==null and status==null and teacherName!=nul">
+            INNER JOIN teacher ON designtopic.dish_teacherId = teacher.id
+            WHERE designtopic.status = 2 AND teacher.teacherName LIKE "%"#{teacherName}"%"
+        </if>
+        <if test="collegeId==null and teacherName==null and status!=null">
             WHERE status = #{status}
         </if>
         LIMIT #{start}, #{size}
     </select>
 
-    <select id="selectCountDesigntopic" parameterType="Integer" resultType="Integer">
-        SELECT count(*) AS total from designtopic
-        <if test="status!=null">
+    <select id="selectCountDesigntopic" resultType="Integer">
+        SELECT count(*) AS total FROM designtopic
+        <if test="teacherName==null and status==null and collegeId!=null">
+            INNER JOIN teacher ON designtopic.dish_teacherId = teacher.id
+            INNER JOIN college ON teacher.collegeId = college.id
+            WHERE college.id = #{collegeId} AND status = 2
+        </if>
+        <if test="collegeId==null and status==null and teacherName!=nul">
+            INNER JOIN teacher ON designtopic.dish_teacherId = teacher.id
+            WHERE designtopic.status = 2 AND teacher.teacherName LIKE "%"#{teacherName}"%"
+        </if>
+        <if test="collegeId==null and teacherName==null and status!=null">
             WHERE status = #{status}
         </if>
     </select>
@@ -43,6 +63,33 @@
 
     <update id="updataDesigntopicInStatusById">
         UPDATE designtopic SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="selectLimitDesigntopicByClassId" resultMap="designtopicResult">
+        SELECT * FROM
+            designtopic
+        INNER JOIN student ON student.topicId = designtopic.id
+        INNER JOIN class ON student.classId = class.id
+        WHERE class.id = #{classId}
+        LIMIT #{start}, #{size}
+    </select>
+
+    <select id="selectCountDesigntopicByClassId" resultType="Integer">
+        SELECT count(*) AS total
+        FROM
+            designtopic
+        INNER JOIN student ON student.topicId = designtopic.id
+        INNER JOIN class ON student.classId = class.id
+        WHERE class.id = #{classId}
+    </select>
+
+    <insert id="insertDesigntopic">
+        INSERT INTO designtopic ( topic, description, dish_teacherId, fileName, status )
+        VALUES ( #{topic}, #{description}, #{dish_teacherId}, #{fileName}, 0 )
+    </insert>
+
+    <update id="updateDesigntopicInGuideTeacherIdById">
+        UPDATE designtopic SET guide_teacherId = #{teacherId} WHERE id = #{id}
     </update>
 
 </mapper>

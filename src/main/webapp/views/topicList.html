@@ -65,6 +65,16 @@
       background-color: #E72F17;
       color: #fff;
     }
+    .layui-table-tool-temp {
+      padding-right: 0;
+    }
+    .form-item {
+      float: left;
+    }
+    .form-item-btns {
+      float: right;
+    }
+
 
 
 
@@ -74,50 +84,35 @@
 
 <body>
   <div class="mian clearfix">
+    <div class="layui-form clearfix">
+      <div class="form-item">
+        <label class="layui-form-label">选择院系</label>
+        <div class="layui-input-inline">
+          <select name="" id="college" lay-filter="college"></select>
+        </div>
+      </div>
+      <div class="form-item">
+        <label class="layui-form-label">选择班级</label>
+        <div class="layui-input-inline">
+          <select name="" lay-filter="classInfo" id="classInfo"></select>
+        </div>
+      </div>
+    </div>
     <div id="table" lay-filter="table"></div>
-    <!-- <div id="itemBox" class="clearfix"></div>
-    <div id="page" class="page"></div> -->
   </div>
 </body>
-<script type="text/html" id="viewDetailTpl">
-
-  <div class="layui-form" style="padding: 20px">
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">设计题目</label>
-      <div class="layui-input-block">
-        <input type="text" class="layui-input" value="{{d.topic}}" disabled/>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">设计要求</label>
-      <div class="layui-input-block">
-        <textarea style="resize: none" class="layui-textarea" disabled>{{d.description}}</textarea>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">出题教师</label>
-      <div class="layui-input-block">
-        <input type="text" class="layui-input" value="{{d.dish_teacher.teacherName||''}}" disabled/>
-      </div>
-    </div>
-    <!-- <div class="layui-form-item">
-      <label class="layui-form-label" style="text-align: left">指导教师</label>
-      <div class="layui-input-block">
-          <input type="text" class="layui-input" value="{{d.guide_teacher?d.guide_teacher.teacherName:''}}" disabled/>
-      </div>
-    </div> -->
-  </div>
-
-</script>
 
 <script type="text/html" id="dish_teacherTpl">
-  {{d.dish_teacher.teacherName}}
+  {{d.dish_teacher?d.dish_teacher.teacherName:""}}
 </script>
+<script type="text/html" id="guide_teacherTpl">
+  {{d.guide_teacher?d.guide_teacher.teacherName:""}}
+</script>
+
 <script type="text/html" id="toolbar">
-  <button class="layui-btn" lay-event="view">查看详情</button>
-  <!-- <button class="layui-btn" lay-event="reView" status="2">审核通过</button> -->
-  <!-- <button class="layui-btn" lay-event="reView" status="3">审核不通过</button> -->
+  <button class="layui-btn" lay-event="del">删除</button>
 </script>
+
 
 <script src="../js/jquery-3.2.1.min.js"></script>
 <script src="../js/jquery.cookie.js"></script>
@@ -139,15 +134,46 @@
       });
     }
 
+    listCollege()
+    .then(function(res) {
+      $.each(res, function(index, item) {
+        $("#college").append('<option value="'+item.id+'">'+item.collegeName+'</option>');
+      });
+      return listClassByCollegeId(res[0].id);
+    }).then(function(res) {
+      $.each(res, function(index, item) {
+        $("#classInfo").append('<option value="'+item.id+'">'+item.className+'</option>');
+      });
+      dataTable.reload({where: {classId: res[0].id}});
+    })
+    .then(function() {
+      form.on("select(college)", function(obj) {
+        listClassByCollegeId(obj.value)
+        .then(function(res2) {
+            $("#classInfo").html("");
+          $.each(res2, function(index, item) {
+            $("#classInfo").append('<option value="'+item.id+'">'+item.className+'</option>');
+          });
+          form.render('select');
+          dataTable.reload({where: {classId: res2[0].id}});
+        })
+      });
+      form.on("select(classInfo)", function(obj) {
+        dataTable.reload({where: {classId: obj.value}});
+        form.render('select');
+      });
+      form.render('select');
+    });
+
     var dataTable = table.render({
       elem: "#table",
-      url: "http://localhost:8080/designtopic/listDesigntopicByCurr",
+      url: "http://localhost:8080/designtopic/listPageDesigntopicByClassId",
       request: {
         pageName: "page",
         limitName: "num"
       },
       where: {
-        status: 0
+        classId: 1
       },
       response: {
         statusName: "isSuccessful",
@@ -157,53 +183,32 @@
         dataName: "list"
       },
       page: true,
+      // defaultToolbar: [],
+      // toolbar: "",
       cols: [[
         { field: "id", title: "ID", width: 80 },
-        { field: "topic", title: "题目", width: 500 },
-        { field: "", title: "提出老师", width: 120, templet: "#dish_teacherTpl" },
+        { field: "topic", title: "课题名称", width: 300 },
+        { field: "", title: "提出教师", width: 120, templet: "#dish_teacherTpl" },
+        { field: "", title: "指导教师", width: 120, templet: "#guide_teacherTpl" },
+        // { field: "", title: "审核状态", width: 120, templet: "#statusTpl" },
         { field: "", title: "操作", toolbar: "#toolbar" },
       ]]
     });
 
     table.on("tool(table)", function(obj) {
-      console.log(obj);
-      
       var event = obj.event;
-      if(event === "view") {
-        // var id = $(this).attr("data-id");
-        var index = layer.load(2);
-        $.post("http://localhost:8080/designtopic/getDesigntopicById?id=" + obj.data.id)
-        .done(function (res) {
-          if (res.isSuccessful) {
-            layer.close(index);
-            var content = laytpl($("#viewDetailTpl").html()).render(res.data);
-            layer.open({
-              type: 1,
-              scrollbar: false,
-              title: "选题详情",
-              content: content,
-              area: ["500px", "380px"],
-              btn: ["审核通过", "审核不通过", "取消"],
-              skin: 'Review-topic-class',
-              yes: function(index, layero) {
-                setDesigntopicInStatusById(obj.data.id, 2);
-              },
-              btn2: function(index, layero) {
-                setDesigntopicInStatusById(obj.data.id, 3);
-                return false;
+      if(event === "del") {
+        layer.confirm('确定要删除该教师信息吗？', {icon: 3, title:'提示'}, function(index){
+          $.getJSON("http://localhost:8080/teacher/delTeacherById?id=" + obj.data.id)
+          .then(function(res) {
+            if(res.isSuccessful) {
+                layer.msg("删除成功！", { time: 1000, end: function(){ layer.closeAll();dataTable.reload() }});
+              } else {
+                layer.msg("删除失败！");
               }
-            });
-          } else {
-
-          }
-        }).fail(function(err) {
-          layer.msg("服务器响应失败！");
-          console.log(err);
+          });
         });
-      } else if(event === "reView") {
-
       }
-      
     });
 
     function setDesigntopicInStatusById(id, status) {
@@ -223,6 +228,28 @@
         console.log(err);
       });
     }
+
+    function listCollege() {
+      return $.getJSON("http://localhost:8080/college/listCollege")
+      .then(function(res) {
+        if(res.isSuccessful) {
+          return res.list;
+        } else {
+
+        }
+      });
+    }
+    function listClassByCollegeId(id) {
+      return $.getJSON("http://localhost:8080/classInfo/listClassByCollegeId?collegeId="+id)
+      .then(function(res) {
+        if(res.isSuccessful) {
+          return res.list;
+        } else {
+
+        }
+      });
+    }
+
   });
 </script>
 

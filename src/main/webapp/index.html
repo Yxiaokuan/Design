@@ -58,22 +58,23 @@
             <a href="javascript:;">教学秘书</a>
             <dl class="layui-nav-child">
               <dd><a href="javascript:;" page="./views/teacherList.html">教师基本信息</a></dd>
-              <dd><a href="javascript:;">学生基本信息</a></dd>
+              <dd><a href="javascript:;" page="./views/studentList.html">学生基本信息</a></dd>
               <dd><a href="javascript:;">数据库备份</a></dd>
-              <dd><a href="javascript:;">课题管理</a></dd>
+              <dd><a href="javascript:;" page="./views/topicList.html">课题管理</a></dd>
             </dl>
           </li>
           <li class="layui-nav-item">
             <a href="javascript:;">教师平台</a>
             <dl class="layui-nav-child">
-              <dd><a href="javascript:;">个人资料</a></dd>
-              <dd><a href="javascript:;">课题上报</a></dd>
+              <dd><a href="javascript:;" page="./views/teacherInfo.html">个人资料</a></dd>
+              <dd><a href="javascript:;" page="./views/dishTopic.html">课题上报</a></dd>
             </dl>
           </li>
           <li class="layui-nav-item">
             <a href="javascript:;">学生平台</a>
             <dl class="layui-nav-child">
-              <dd><a href="javascript:;">个人资料</a></dd>
+              <dd><a href="javascript:;" page="./views/studentInfo.html">个人资料</a></dd>
+              <dd><a href="javascript:;" page="./views/dopicInfo.html">资料下载</a></dd>
             </dl>
           </li>
         </ul>
@@ -83,6 +84,8 @@
     <div class="layui-body">
       <!-- 内容主体区域 -->
       <iframe src="./views/designTopic.html" frameborder="0"></iframe>
+      <!-- <iframe src="./views/dopicInfo.html" frameborder="0"></iframe> -->
+      
       <!-- <div style="padding: 15px;">内容主体区域</div> -->
     </div>
 
@@ -127,15 +130,24 @@
     var roleType = $.cookie("roleType"),
       roleId = $.cookie("roleId");
     if(!roleType) {
-
+      $(".layui-layout-right .layui-nav-item").eq(0).hide();
+      $(".layui-layout-right .layui-nav-item").eq(1).hide();
     } else if(roleType==0) {
       $(".layui-layout-right .layui-nav-item").eq(2).hide();
       $(".layui-nav-tree>.layui-nav-item").eq(1).show();
-      getRoleById(1);
+      getRoleById(roleId);
     } else if(roleType==1) {
       $(".layui-layout-right .layui-nav-item").eq(2).hide();
       $(".layui-nav-tree>.layui-nav-item").eq(2).show();
-      getRoleById(1);
+      getRoleById(roleId);
+    } else if(roleType==2) {
+      $(".layui-layout-right .layui-nav-item").eq(2).hide();
+      $(".layui-nav-tree>.layui-nav-item").eq(3).show();
+      getTeacherById(roleId);
+    } else if(roleType==3) {
+      $(".layui-layout-right .layui-nav-item").eq(2).hide();
+      $(".layui-nav-tree>.layui-nav-item").eq(4).show();
+      getStudentById(roleId);
     }
 
     function getRoleById(id) {
@@ -143,6 +155,37 @@
       .done(function(res){
         if(res.isSuccessful) {
           $("#loginName").html(res.data.roleName);
+        } else {
+          layer.msg(res.msg||"请求失败！");
+        }
+        
+      })
+      .fail(function(err) {
+        layer.msg("服务器响应失败！");
+        console.log(err);
+      });
+    }
+    function getTeacherById(id) {
+      return $.getJSON("http://localhost:8080/teacher/getTeacherById?id=" + id)
+      .done(function(res){
+        if(res.isSuccessful) {
+          $("#loginName").html(res.data.teacherName);
+        } else {
+          layer.msg(res.msg||"请求失败！");
+        }
+        
+      })
+      .fail(function(err) {
+        layer.msg("服务器响应失败！");
+        console.log(err);
+      });
+    }
+    function getStudentById(id) {
+      return $.getJSON("http://localhost:8080/student/getStudentById?id=" + id)
+      .done(function(res){
+        if(res.isSuccessful) {
+          $("#loginName").html(res.data.studentName);
+          if(res.data.topicId) cookieOpMod.set("topicId", res.data.topicId);
         } else {
           layer.msg(res.msg||"请求失败！");
         }

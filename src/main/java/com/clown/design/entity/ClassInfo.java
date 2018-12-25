@@ -5,13 +5,10 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class Teacher implements Serializable {
+public class ClassInfo implements Serializable {
     private Integer id;
-    private String teacherName;
-    private Integer expertiseId;
+    private String className;
     private Integer collegeId;
-    private String password;
 
-    private Expertise expertise;
     private College college;
 }

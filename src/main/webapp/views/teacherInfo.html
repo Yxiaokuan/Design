@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSM_Design - </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_977780_p6rmctl39h.css" />
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../plugins/layui/css/layui.css" />
+
+  <style>
+  
+    .layui-form {
+      margin: 200px auto;
+      width: 500px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div class="mian">
+    <form class="layui-form" lay-filter="form">
+      <div class="layui-form-item">
+        <label class="layui-form-label">教师姓名：</label>
+        <div class="layui-input-block">
+          <input type="text" class="layui-input" name="teacherName" required="" lay-verify="required" value="" disabled />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">教师院系：</label>
+        <div class="layui-input-block">
+          <select name="collegeId" id="College" disabled></select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">教师专长：</label>
+        <div class="layui-input-block">
+          <select name="expertiseId" id="expertise" disabled></select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">登录密码：</label>
+        <div class="layui-input-block">
+          <input type="text" class="layui-input" name="password" required="" lay-verify="required" value="" />
+        </div>
+      </div>
+      <div class="layui-form-item" style="text-align: center">
+        <button id="submit" class="layui-btn" lay-submit lay-filter="submit">提交资料修改</button>
+      </div>
+    </form>
+  </div>
+  
+</body>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script>
+  layui.use(["layer", "form"], function() {
+    var layer = layui.layer,
+      form = layui.form;
+
+    var roleType = $.cookie("roleType"),
+      roleId = $.cookie("roleId");
+
+    listCollege()
+    .then(function(res) {
+      $("#College").html("");
+      $.each(res, function(index, item) {
+        $("#College").append('<option value="'+item.id+'">'+item.collegeName+'</option>');
+      })
+      return listExpertise();
+    })
+    .then(function(res) {
+      $("#expertise").html("");
+      $.each(res, function(index, item) {
+        $("#expertise").append('<option value="'+item.id+'">'+item.expertiseName+'</option>');
+      })
+      return $.getJSON("http://localhost:8080/teacher/getTeacherById?id=" + roleId)
+    })
+    .then(function(res) {
+      form.val("form", res.data);
+      form.render();
+      form.on("submit(submit)", function(obj) {
+        obj.field.id = roleId;
+        console.log(obj.field);
+        $.getJSON("http://localhost:8080/teacher/updateTeacher", obj.field)
+        .then(function(res) {
+          if(res.isSuccessful) {
+            layer.msg("修改成功！");
+          } else {
+            layer.msg("修改失败！");
+          }
+        })
+        return false;
+      });
+    });
+
+    function listCollege() {
+      return $.getJSON("http://localhost:8080/college/listCollege")
+      .then(function(res) {
+        if(res.isSuccessful) {
+          return res.list;
+        } else {
+
+        }
+      });
+    }
+    function listExpertise() {
+      return $.getJSON("http://localhost:8080/expertise/listExpertise")
+      .then(function(res) {
+        if(res.isSuccessful) {
+          return res.list;
+        } else {
+
+        }
+      });
+    }
+
+  });
+</script>
+</html>

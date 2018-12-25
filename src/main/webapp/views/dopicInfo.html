@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSM_Design - </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_977780_p6rmctl39h.css" />
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../plugins/layui/css/layui.css" />
+
+  <style>
+  
+    .layui-form {
+      margin: 200px auto;
+      width: 700px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div class="mian">
+    <form class="layui-form" lay-filter="form">
+      <div class="layui-form-item">
+        <label class="layui-form-label">学生姓名：</label>
+        <div class="layui-input-block">
+          <input type="text" class="layui-input" name="studentName" required="" lay-verify="required" value="" disabled />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">设计题目：</label>
+        <div class="layui-input-block">
+          <input type="text" class="layui-input" name="topic" required="" lay-verify="required" value="" disabled />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">设计要求：</label>
+        <div class="layui-input-block">
+          <textarea class="layui-textarea" name="description" disabled></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">指导老师：</label>
+        <div class="layui-input-block">
+          <input type="text" class="layui-input" name="teacherName" required="" lay-verify="required" value="" disabled />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">附件下载：</label>
+        <div class="layui-input-block" id="download"></div>
+      </div>
+    </form>
+  </div>
+  
+</body>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script>
+  layui.use(["layer", "form"], function() {
+    var layer = layui.layer,
+      form = layui.form;
+
+    var roleType = $.cookie("roleType"),
+      roleId = $.cookie("roleId");
+    var formData = {};
+
+    $.getJSON("http://localhost:8080/student/getStudentById?id=" + roleId)
+    .then(function(res) {
+      formData.studentName = res.data.studentName;
+      return $.getJSON("http://localhost:8080/designtopic/getDesigntopicById?id=" + res.data.topicId)
+    })
+    .then(function(res) {
+      console.log(res);
+      formData.topic = res.data.topic;
+      formData.description = res.data.description;
+      formData.teacherName = res.data.guide_teacher?res.data.guide_teacher.teacherName:"暂无";
+      if(res.data.fileName) {
+        $("#download").html('<a href="http://127.0.0.1:8088/'+res.data.fileName+'" download="'+res.data.fileName+'" style="line-height: 36px">'+res.data.fileName+'</a>');
+      } else {
+        $("#download").html('<a href="javascript:;" style="line-height: 36px">暂无</a>');
+      }
+      
+      // <a href="javascript:;" style="line-height: 36px">aa.aaaaa</a>
+      form.val("form", formData);
+    })
+  });
+</script>
+</html>

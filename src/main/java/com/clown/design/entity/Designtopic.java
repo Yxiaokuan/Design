@@ -13,6 +13,8 @@ public class Designtopic implements Serializable {
     private Integer dish_teacherId;
     private Integer guide_teacherId;
     private Integer status;
+    private String fileUrl;
+    private String fileName;
 
 //    private List<Teacher> teachers;
     private Teacher dish_teacher;

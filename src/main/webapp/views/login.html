@@ -63,7 +63,7 @@
           <div class="layui-form-item">
             <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
             <div class="layui-input-block">
-              <input type="text" name="roleName" required="" lay-verify="required" placeholder="请输入登录名" autocomplete="off" class="layui-input">
+              <input type="text" name="name" required="" lay-verify="required" placeholder="请输入登录名" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-form-item">
@@ -75,7 +75,7 @@
           <div class="layui-form-item">
             <label class="layui-form-label" style="width: 110px">登录类型</label>
             <div class="layui-input-block" style="margin-left: 110px">
-              <select name="roleType" lay-verify="required">
+              <select name="type" lay-verify="required">
                 <option value=""></option>
                 <option value="0">领导</option>
                 <option value="1">管理员</option>
@@ -103,23 +103,34 @@
       form = layui.form;
 
       form.on("submit(login)", function(obj) {
-        var roleType = obj.field.roleType;
-        console.log(roleType);
-        
+        var type = obj.field.type;
+        var data = {
+          password: obj.field.password
+        };
         var urls = [
           'http://localhost:8080/role/verifyRole',
           'http://localhost:8080/role/verifyRole',
-          '',
-          ''
+          'http://localhost:8080/teacher/verifyTeacher',
+          'http://localhost:8080/student/verifyStudent'
         ];
-        $.post(urls[roleType], obj.field)
+        
+        if(type==0||type==1) {
+          data.roleType = type;
+          data.roleName = obj.field.name;
+        } else if(type==2) {
+          data.teacherName = obj.field.name;
+        } else if(type==3) {
+          data.studentName = obj.field.name;
+        }
+        console.log(data);
+
+        $.post(urls[type], data)
         .then(function(res) {
           if(res.isSuccessful) {
             console.log(res);
-            
             layer.msg(res.message, {time: 1000,end: function() {
-              cookieOpMod.set("roleId", res.roleId);
-              cookieOpMod.set("roleType", res.roleType);
+              cookieOpMod.set("roleId", res.roleId||res.id);
+              cookieOpMod.set("roleType", type);
               window.location.href = "../index.html";
             }});
           } else {

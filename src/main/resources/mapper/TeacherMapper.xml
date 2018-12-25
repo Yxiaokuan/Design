@@ -8,6 +8,15 @@
         <result column="teacherName" property="teacherName"/>
         <result column="expertiseId" property="expertiseId"/>
         <result column="collegeId" property="collegeId"/>
+        <result column="password" property="password"/>
+        <association property="expertise" javaType="com.clown.design.entity.Expertise">
+            <id column="expertise_id" property="id"/>
+            <result column="expertiseName" property="expertiseName"/>
+        </association>
+        <association property="college" javaType="com.clown.design.entity.College">
+            <id column="college_id" property="id"/>
+            <result column="collegeName" property="collegeName"/>
+        </association>
     </resultMap>
 
 
@@ -19,6 +28,43 @@
         UPDATE teacher SET password=#{newPassword} WHERE id = #{id} AND password = #{password}
     </update>
 
+    <select id="selectAllTeacherByCurr" parameterType="Map" resultMap="teachertResult">
+        SELECT
+            *,
+            expertise.id AS expertise_id,
+            college.id AS college_id
+        FROM teacher
+        LEFT JOIN expertise ON teacher.expertiseId = expertise.id
+        LEFT JOIN college ON teacher.collegeId = college.id
+        LIMIT #{start}, #{size}
+    </select>
 
+    <select id="selectCountTeacher" parameterType="Integer" resultType="Integer">
+        SELECT count(*) AS total from teacher
+    </select>
+
+    <insert id="insertTeacher">
+        INSERT INTO teacher ( teacherName, collegeId, expertiseId, password )
+        VALUES ( #{teacherName}, #{collegeId}, #{expertiseId}, #{password} )
+    </insert>
+
+    <update id="updateTeacher">
+        UPDATE teacher
+            <trim prefix="set" suffixOverrides=",">
+                <if test="teacherName!=null">teacherName=#{teacherName},</if>
+                <if test="collegeId!=null">collegeId=#{collegeId},</if>
+                <if test="expertiseId!=null">expertiseId=#{expertiseId},</if>
+                <if test="password!=null">password=#{password},</if>
+            </trim>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTeacherById">
+        DELETE FROM teacher WHERE id = #{id}
+    </delete>
+
+    <select id="selectTeacherByTeacherNameAndPassword" resultType="com.clown.design.entity.Teacher">
+        SELECT * FROM teacher WHERE teacherName = #{teacherName} AND password = #{password}
+    </select>
 
 </mapper>

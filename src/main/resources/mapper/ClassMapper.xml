@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clown.design.dao.IClassDao">
+    <resultMap id="classResult" type="com.clown.design.entity.ClassInfo">
+        <id column="id" property="id"/>
+        <result column="className" property="className"/>
+        <result column="collegeId" property="collegeId"/>
+        <association property="college" javaType="com.clown.design.entity.College">
+            <id column="college_id" property="id"/>
+            <result column="collegeName" property="collegeName"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAllClassByCollegeId" resultMap="classResult">
+        SELECT
+            *,
+            college.id AS college_id
+        FROM
+            class
+        LEFT JOIN college ON class.collegeId = college.id
+        <if test="collegeId!=null">
+            WHERE college.id = #{collegeId}
+        </if>
+    </select>
+
+</mapper>

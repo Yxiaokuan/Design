@@ -20,7 +20,7 @@ var cookieOpMod = {
     var expire = new Date();
     expire.setTime(expire.getTime() + (60 * 60 * 1000));
     $.cookie(cookie, value, {
-      expires: expire,
+      // expires: expire,
       path: '/'
     });
   },
