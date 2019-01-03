@@ -43,6 +43,74 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "教师登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/verifyTeacher?teacherName=聂时时&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"verifyTeacher"
+							],
+							"query": [
+								{
+									"key": "teacherName",
+									"value": "聂时时"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "学生登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/verifyStudent?studentName=李寻欢&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"verifyStudent"
+							],
+							"query": [
+								{
+									"key": "studentName",
+									"value": "李寻欢"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -187,6 +255,634 @@
 									"value": "2",
 									"description": "课题审核状态；0-未审核，1-审核中，2-审核通过，3-审核未通过"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据班级ID分页获取所有已审核已选课题",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/designtopic/listPageDesigntopicByClassId?page=1&num=2&classId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"designtopic",
+								"listPageDesigntopicByClassId"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "num",
+									"value": "2"
+								},
+								{
+									"key": "classId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加课题",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/designtopic/addDesigntopic?topic=课题名称2&description=课题要求2&dish_teacherId=1&fileName=archivetemp1基于SSM的毕业设计选题系统设计与实现 课题任务书 .doc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"designtopic",
+								"addDesigntopic"
+							],
+							"query": [
+								{
+									"key": "topic",
+									"value": "课题名称2"
+								},
+								{
+									"key": "description",
+									"value": "课题要求2"
+								},
+								{
+									"key": "dish_teacherId",
+									"value": "1"
+								},
+								{
+									"key": "fileName",
+									"value": "archivetemp1基于SSM的毕业设计选题系统设计与实现 课题任务书 .doc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "教师信息",
+			"item": [
+				{
+					"name": "分页获取所有教师信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/listTeacherByCurr?page=1&num=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"listTeacherByCurr"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "num",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加教师信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/addTeacher?teacherName=王五&collegeId=4&expertiseId=4&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"addTeacher"
+							],
+							"query": [
+								{
+									"key": "teacherName",
+									"value": "王五"
+								},
+								{
+									"key": "collegeId",
+									"value": "4"
+								},
+								{
+									"key": "expertiseId",
+									"value": "4"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据ID修改教师信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/updateTeacher?teacherName=王五&collegeId=4&expertiseId=4&password=123&id=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"updateTeacher"
+							],
+							"query": [
+								{
+									"key": "teacherName",
+									"value": "王五"
+								},
+								{
+									"key": "collegeId",
+									"value": "4"
+								},
+								{
+									"key": "expertiseId",
+									"value": "4"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								},
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据ID删除教师信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/delTeacherById?id=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"delTeacherById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据教师ID获取教师信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/teacher/getTeacherById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"teacher",
+								"getTeacherById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "专长信息",
+			"item": [
+				{
+					"name": "获取所有专长信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/expertise/listExpertise",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"expertise",
+								"listExpertise"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "院系信息",
+			"item": [
+				{
+					"name": "获取所有的院系信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/college/listCollege",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"college",
+								"listCollege"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "班级信息",
+			"item": [
+				{
+					"name": "根据院系ID获取所有班级信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/classInfo/listClassByCollegeId?collegeId=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"classInfo",
+								"listClassByCollegeId"
+							],
+							"query": [
+								{
+									"key": "collegeId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "学生信息",
+			"item": [
+				{
+					"name": "根据班级ID分页获取学生信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/listStudentByCurr?page=1&num=10&classId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"listStudentByCurr"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "num",
+									"value": "10"
+								},
+								{
+									"key": "classId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加学生信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/addStudent?studentName=张大宝&studentIdentifier=模具S2016-1-3&collegeId=3&classId=4&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"addStudent"
+							],
+							"query": [
+								{
+									"key": "studentName",
+									"value": "张大宝"
+								},
+								{
+									"key": "studentIdentifier",
+									"value": "模具S2016-1-3"
+								},
+								{
+									"key": "collegeId",
+									"value": "3"
+								},
+								{
+									"key": "classId",
+									"value": "4"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据ID修改学生信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/updateStudent?studentName=张大宝&studentIdentifier=模具S2016-1-3&collegeId=3&classId=4&password=123&id=7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"updateStudent"
+							],
+							"query": [
+								{
+									"key": "studentName",
+									"value": "张大宝"
+								},
+								{
+									"key": "studentIdentifier",
+									"value": "模具S2016-1-3"
+								},
+								{
+									"key": "collegeId",
+									"value": "3"
+								},
+								{
+									"key": "classId",
+									"value": "4"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								},
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据学生ID删除学生信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/delStudentById?id=7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"delStudentById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据学生ID获取学生信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/getStudentById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"getStudentById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据学生ID修改/设置题目ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/student/setTopicIdById?id=6&topicId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"student",
+								"setTopicIdById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6"
+								},
+								{
+									"key": "topicId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "文件处理",
+			"item": [
+				{
+					"name": "文件上传",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/file/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"file",
+								"upload"
 							]
 						}
 					},
