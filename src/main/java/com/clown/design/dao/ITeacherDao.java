@@ -22,5 +22,5 @@ public interface ITeacherDao {
     // 根据教师ID删除教师信息
     Integer deleteTeacherById(Integer id);
     // 根据教师登录名和密码查询教师信息
-    Teacher selectTeacherByTeacherNameAndPassword(@Param("teacherName")String teacherName, @Param("password")String password);
+    Teacher selectTeacherByJobNumberAndPassword(@Param("jobNumber")String jobNumber, @Param("password")String password);
 }

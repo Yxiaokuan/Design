@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+
+  <!-- <link rel="stylesheet" href="./css/reset.css" /> -->
+
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+
+  <style>
+    .list-block ul {
+      background-color: #f5f5f5;
+    }
+    .list-block li {
+      margin-top: 10px;
+      background-color: #fff;
+    }
+  
+  </style>
+
+</head>
+
+<body>
+  <!-- page集合的容器，里面放多个平行的.page，其他.page作为内联页面由路由控制展示 -->
+  <div class="page-group">
+    <!-- 单个page ,第一个.page默认被展示-->
+    <div class="page">
+      <!-- 这里是页面内容区 -->
+      <div class="content">
+        <div class="content-block">
+          <header class="bar bar-nav">
+            <a href="#" class="button button-link button-nav pull-left back">
+              <span class="icon icon-left"></span>
+              返回
+            </a>
+            <h1 class='title'>个人资料</h1>
+          </header>
+          <div class="content">
+            <div class="list-block">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">姓名</div>
+                      <div class="item-input">
+                        <input type="text" name="studentName" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">学号</div>
+                      <div class="item-input">
+                        <input type="text" name="studentIdentifier" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-password"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">密码</div>
+                      <div class="item-input">
+                        <input type="password" name="newPwd">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-password"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">确认密码</div>
+                      <div class="item-input">
+                        <input type="password" name="reNewPwd">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div id="option" class="content-block">
+              <div class="row">
+                <!-- <div class="col-50"><a href="./user.html" class="button button-big button-fill button-danger">取消</a></div> -->
+                <div class="col-100"><a href="#" class="button button-big button-fill button-danger">提交修改</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script src="../js/constant.js"></script>
+<script>
+  layui.use(["layer"], function () {
+
+    var userId = $.cookie("userId");
+    if (!userId) {
+      cookieOpMod.clear("userId");
+      window.location.href = "./login.html";
+    }
+    $.get(getURL() + "student/getStudentById?id=" + userId)
+      .then(function (res) {
+        // console.log(res);
+        for(var i in res.data) {
+          $('[name="'+i+'"]').val(res.data[i]);
+        }
+
+        $("#option .button").click(function() {
+          console.log(11);
+          var newPwd = $("[name=newPwd]").val();
+          var reNewPwd = $("[name=reNewPwd]").val();
+          if(newPwd.length<=0) {
+            layer.msg("密码不能为空！");
+            return;
+          }
+          if(reNewPwd.length<=0) {
+            layer.msg("确认密码不能为空！");
+            return;
+          }
+          if(newPwd!=reNewPwd) {
+            layer.msg("两次密码输入有差异！");
+            return;
+          }
+          $.get(getURL() + "student/updatePasswordById", {id: userId, password: newPwd, newPassword: reNewPwd})
+          .then(function(res2) {
+            if(res2.isSuccessful) {
+              layer.msg("修改成功！");
+              $("[name=newPwd]").val("");
+              $("[name=reNewPwd]").val("");
+            } else {
+              layer.msg(res2.message);
+            }
+            
+          })
+          
+          
+        })
+      })
+    
+
+  });
+</script>
+
+</html>

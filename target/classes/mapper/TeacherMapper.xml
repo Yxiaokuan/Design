@@ -9,6 +9,7 @@
         <result column="expertiseId" property="expertiseId"/>
         <result column="collegeId" property="collegeId"/>
         <result column="password" property="password"/>
+        <result column="jobNumber" property="jobNumber"/>
         <association property="expertise" javaType="com.clown.design.entity.Expertise">
             <id column="expertise_id" property="id"/>
             <result column="expertiseName" property="expertiseName"/>
@@ -44,8 +45,8 @@
     </select>
 
     <insert id="insertTeacher">
-        INSERT INTO teacher ( teacherName, collegeId, expertiseId, password )
-        VALUES ( #{teacherName}, #{collegeId}, #{expertiseId}, #{password} )
+        INSERT INTO teacher ( teacherName, collegeId, expertiseId, password, jobNumber )
+        VALUES ( #{teacherName}, #{collegeId}, #{expertiseId}, #{password}, #{jobNumber} )
     </insert>
 
     <update id="updateTeacher">
@@ -55,6 +56,7 @@
                 <if test="collegeId!=null">collegeId=#{collegeId},</if>
                 <if test="expertiseId!=null">expertiseId=#{expertiseId},</if>
                 <if test="password!=null">password=#{password},</if>
+                <if test="jobNumber!=null">jobNumber=#{jobNumber},</if>
             </trim>
         WHERE id = #{id}
     </update>
@@ -63,8 +65,8 @@
         DELETE FROM teacher WHERE id = #{id}
     </delete>
 
-    <select id="selectTeacherByTeacherNameAndPassword" resultType="com.clown.design.entity.Teacher">
-        SELECT * FROM teacher WHERE teacherName = #{teacherName} AND password = #{password}
+    <select id="selectTeacherByJobNumberAndPassword" resultType="com.clown.design.entity.Teacher">
+        SELECT * FROM teacher WHERE jobNumber = #{jobNumber} AND password = #{password}
     </select>
 
 </mapper>

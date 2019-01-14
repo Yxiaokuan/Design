@@ -18,6 +18,7 @@ public class FileController {
     @ResponseBody
     public Map<String, Object> upload(HttpServletResponse response, HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         Map<String, Object> res = new HashMap<>();
+        response.setHeader("content-type", "application/octet-stream");
         res.put("isSuccessful", false);
         if (!file.isEmpty()) {
             String saveFileName = file.getOriginalFilename();

@@ -67,8 +67,8 @@
         DELETE FROM student WHERE id = #{id}
     </delete>
 
-    <select id="selectStudentByStudentNameAndPassword" resultType="com.clown.design.entity.Student">
-        SELECT * FROM student WHERE studentName = #{studentName} AND password = #{password}
+    <select id="selectStudentByStudentIdentifierAndPassword" resultType="com.clown.design.entity.Student">
+        SELECT * FROM student WHERE studentIdentifier = #{studentIdentifier} AND password = #{password}
     </select>
 
     <update id="updateStudentInTopicIdById">

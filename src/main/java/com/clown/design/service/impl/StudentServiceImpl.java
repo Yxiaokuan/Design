@@ -79,8 +79,8 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public Student verifyStudent(String studentName, String password) {
-        return this.studentDao.selectStudentByStudentNameAndPassword(studentName, password);
+    public Student verifyStudent(String studentIdentifier, String password) {
+        return this.studentDao.selectStudentByStudentIdentifierAndPassword(studentIdentifier, password);
     }
 
     @Override

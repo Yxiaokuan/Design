@@ -99,8 +99,11 @@ public class TeacherController {
         res.put("isSuccessful", false);
         String teacherName = teacher.getTeacherName();
         String password = teacher.getPassword();
+        String jobNumber = teacher.getJobNumber();
         if(teacherName==null||teacherName.equals("")) {
             res.put("message", "teacherName不能为空！");
+        } else if(jobNumber==null||jobNumber.equals("")) {
+            res.put("message", "jobNumber不能为空！");
         } else if(password==null||password.equals("")) {
             res.put("message", "passWord不能为空！");
         } else if(this.teacherService.addTeacher(teacher) != -1) {
@@ -155,14 +158,14 @@ public class TeacherController {
     public Map<String, Object> verifyTeacher(HttpServletRequest request, HttpServletResponse response, Teacher teacher) throws  IOException {
         Map<String, Object> map = new HashMap<>();
         map.put("isSuccessful", false);
-        String teacherName = teacher.getTeacherName();
+        String jobNumber = teacher.getJobNumber();
         String password = teacher.getPassword();
-        if(teacherName==null||teacherName.equals("")) {
-            map.put("message", "roleName不能为空！");
+        if(jobNumber==null||jobNumber.equals("")) {
+            map.put("message", "jobNumber不能为空！");
         } else if(password==null||password.equals("")) {
             map.put("message", "password不能为空！");
         } else{
-            Teacher res = this.teacherService.verifyTeacher(teacherName, password);
+            Teacher res = this.teacherService.verifyTeacher(jobNumber, password);
             if(res != null) {
                 map.put("isSuccessful", true);
                 map.put("message", "登录成功！");

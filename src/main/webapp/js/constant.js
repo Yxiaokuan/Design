@@ -1,5 +1,5 @@
 /* -- 全局常量 -- */
-// var URL = "http://www.vzone.cn/Vzone/";
+var URL = "http://localhost:8080/";
 // var DOCURL = "http://www.vzone.cn/VzoneDocument/";
 
 /* -- 全局操作function -- */

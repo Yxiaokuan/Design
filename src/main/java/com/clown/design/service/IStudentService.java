@@ -21,7 +21,7 @@ public interface IStudentService {
     // 根据ID删除学生信息
     Integer delStudentById(Integer id);
     // 学生登录
-    Student verifyStudent(String studentName, String password);
+    Student verifyStudent(String studentIdentifier, String password);
     // 根据学生ID修改/设置题目ID
     Integer setTopicIdById(Integer topicId, Integer id);
 }

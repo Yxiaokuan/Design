@@ -66,7 +66,7 @@ public class TeacherServiceImpl implements ITeacherService {
     }
 
     @Override
-    public Teacher verifyTeacher(String teacherName, String password) {
-        return this.teacherDao.selectTeacherByTeacherNameAndPassword(teacherName, password);
+    public Teacher verifyTeacher(String jobNumber, String password) {
+        return this.teacherDao.selectTeacherByJobNumberAndPassword(jobNumber, password);
     }
 }

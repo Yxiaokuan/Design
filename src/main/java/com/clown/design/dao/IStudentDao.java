@@ -23,7 +23,7 @@ public interface IStudentDao {
     Integer deleteStudentById(Integer id);
 
     // 根据学生登录名和密码查询学生信息
-    Student selectStudentByStudentNameAndPassword(@Param("studentName")String studentName, @Param("password")String password);
+    Student selectStudentByStudentIdentifierAndPassword(@Param("studentIdentifier")String studentName, @Param("password")String password);
     // 根据学生ID更新学生题目ID
     Integer updateStudentInTopicIdById(@Param("topicId") Integer topicId, @Param("id") Integer id);
 }

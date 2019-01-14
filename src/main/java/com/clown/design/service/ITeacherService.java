@@ -19,5 +19,5 @@ public interface ITeacherService {
     // 根据ID删除教师信息
     Integer delTeacherById(Integer id);
     // 教师登录
-    Teacher verifyTeacher(String teacherName, String passWord);
+    Teacher verifyTeacher(String jobNumber, String passWord);
 }

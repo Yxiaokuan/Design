@@ -178,14 +178,14 @@ public class StudentController {
     public Map<String, Object> verifyStudent(HttpServletRequest request, HttpServletResponse response, Student student) throws  IOException {
         Map<String, Object> map = new HashMap<>();
         map.put("isSuccessful", false);
-        String studentName = student.getStudentName();
+        String studentIdentifier = student.getStudentIdentifier();
         String password = student.getPassword();
-        if(studentName==null||studentName.equals("")) {
+        if(studentIdentifier==null||studentIdentifier.equals("")) {
             map.put("message", "studentName不能为空！");
         } else if(password==null||password.equals("")) {
             map.put("message", "password不能为空！");
         } else{
-            Student res = this.studentService.verifyStudent(studentName, password);
+            Student res = this.studentService.verifyStudent(studentIdentifier, password);
             if(res != null) {
                 map.put("isSuccessful", true);
                 map.put("message", "登录成功！");

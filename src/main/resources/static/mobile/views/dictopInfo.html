@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+
+  <link rel="stylesheet" href="../css/reset.css" />
+
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+
+  <style>
+    .list-block ul {
+      background-color: #f5f5f5;
+    }
+    .list-block li {
+      margin-top: 10px;
+      background-color: #fff;
+    }
+  
+  </style>
+
+</head>
+
+<body>
+  <!-- page集合的容器，里面放多个平行的.page，其他.page作为内联页面由路由控制展示 -->
+  <div class="page-group">
+    <!-- 单个page ,第一个.page默认被展示-->
+    <div class="page">
+      <!-- 这里是页面内容区 -->
+      <div class="content">
+        <div class="content-block">
+          <header class="bar bar-nav">
+            <a href="#" class="button button-link button-nav pull-left back">
+              <span class="icon icon-left"></span>
+              返回
+            </a>
+            <h1 class='title'>选题详情</h1>
+          </header>
+          <div class="content">
+            <div class="list-block">
+              <ul>
+                <!-- Text inputs -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">题目</div>
+                      <div class="item-input">
+                        <input type="text" name="topic" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="align-top">
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">要求</div>
+                      <div class="item-input">
+                        <textarea name="description" disabled></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">提出教师</div>
+                      <div class="item-input">
+                        <input type="text" name="dish_teacher" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">指导教师</div>
+                      <div class="item-input">
+                        <input type="text" name="guide_teacher" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title label">选题人数</div>
+                      <div class="item-input">
+                        <input type="text" placeholder="" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </li> -->
+              </ul>
+            </div>
+            <div id="option" class="content-block" style="display: none">
+              <div class="row">
+                <!-- <div class="col-50"><a href="../index.html" class="button button-big button-fill button-danger">取消</a></div> -->
+                <div class="col-100"><a href="#" class="button button-big button-fill button-danger">选择该题</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../plugins/layui/layui.js"></script>
+<script src="../js/constant.js"></script>
+<script>
+  layui.use(["layer"], function () {
+
+    var id = GetQueryString("id");
+    var userId = $.cookie("userId");
+
+    if (!userId) {
+      // cookieOpMod.clear("userId");
+      // window.location.href = "./login.html";
+    }
+    $.get(getURL() + "designtopic/getDesigntopicById?id=" + id)
+      .then(function (res) {
+        // console.log(res);
+        for (var i in res.data) {
+          if (i === "dish_teacher") {
+            $('[name="' + i + '"]').val(res.data[i] ? res.data[i].teacherName : "");
+          } else if (i === "guide_teacher") {
+            $('[name="' + i + '"]').val(res.data[i] ? res.data[i].teacherName : "");
+          } else {
+            $('[name="' + i + '"]').val(res.data[i]);
+          }
+        }
+        if (userId) return $.get(getURL() + "student/getStudentById?id=" + userId)
+      })
+      .then(function (res) {
+        // console.log(res);
+        $("#option").show();
+        $("#option .button").click(function () {
+          // console.log(1111);
+          $.get(getURL() + "student/setTopicIdById", {
+              id: userId,
+              topicId: id
+            })
+            .then(function (res2) {
+              if (res2.isSuccessful) layer.msg("选定成功！", {
+                end: function () {
+                  window.history.back(-1)
+                }
+              });
+            })
+
+        })
+      });
+
+
+  });
+</script>
+
+</html>
